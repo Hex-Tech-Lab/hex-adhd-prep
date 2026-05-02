@@ -6,7 +6,7 @@
   "author": "Hex-Tech-Lab",
   "license": "MIT",
   "engines": {
-    "node": "22.13.0",
+    "node": "24.x",
     "pnpm": "9.14.0"
   },
   "scripts": {
