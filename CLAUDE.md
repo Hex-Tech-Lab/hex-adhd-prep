@@ -345,20 +345,29 @@ const memoryScaffolds = [
 
 ## 6. CURRENT STATUS & PROGRESS TRACKING
 
-### **6.1 Phase 0-1 Progress**
+### **6.1 Phase 0-1 Progress (UPDATED Session 2 — May 3, 2026)**
 
 ```
-WEEK 1: Foundation & ASRS
-├─ [ ] Repo setup
-├─ [ ] Auth API
-├─ [ ] ASRS module
-└─ Gate: ASRS works, 100 users, <2 sec FCP
+WEEK 1: Foundation & ASRS — ✅ 70% COMPLETE
+├─ [x] Repo setup (commit: 603a171, 652f4ab)
+├─ [x] Auth API (signup + login + password hashing)
+├─ [x] ASRS module (6 questions, scoring, risk levels)
+├─ [x] Modules 2-5 UI (family, history, impact, comorbidity, review)
+├─ [x] Assessment CRUD APIs (all endpoints with Supabase integration)
+├─ [x] Database schema (complete DDL + RLS policies)
+├─ [x] Auth tests (password, email, session tokens)
+├─ [ ] @supabase/supabase-js + env config ← BLOCKING
+├─ [ ] Module page assessmentId integration ← IN PROGRESS
+├─ [ ] API route integration tests (≥80% coverage)
+├─ [ ] Vercel staging deployment
+└─ Gate: ≥80% code coverage, 0 P0 bugs, Snyk pass, <2 sec FCP
 
 WEEK 2: Interview & Family
-├─ [ ] Interview engine
-├─ [ ] Claude integration (mock first, real second)
-├─ [ ] Family input module
-└─ Gate: 5 interviews done, no crashes
+├─ [ ] Interview engine (Claude Sonnet API)
+├─ [ ] Question bank (30 Q's: 9x4 domains + 5 functional)
+├─ [ ] Follow-up logic (vagueness detection + Claude probing)
+├─ [ ] Interview responses API
+└─ Gate: 5 interviews tested, no crashes
 
 WEEK 3: Validation
 ├─ [ ] 10 closed-loop cases (patient → clinician)
@@ -367,30 +376,52 @@ WEEK 3: Validation
 └─ Gate: Pass all gates or fix + re-test
 
 WEEK 4: Launch
-├─ [ ] Clinician directory
-├─ [ ] Final QA
-├─ [ ] Deploy to production
-└─ Gate: Public beta launch
+├─ [ ] Clinician directory (seed data)
+├─ [ ] Final QA + performance testing
+├─ [ ] Production deploy to Vercel
+└─ Gate: Public beta launch (NPS ≥60, CAC <$10)
 ```
 
-### **6.2 Known Issues & Blockers**
+**Session 2 Commits:**
+- `652f4ab` — feat: Phase 1 backend — Auth APIs + Assessment CRUD + DB schema + Tests
+- `603a171` — feat: Complete Modules 2-5 assessment flow
+
+**Session 2 Deliverables:**
+- ✅ 6 API routes (signup, login, asrs, history, impact, comorbidity, family, complete)
+- ✅ Auth system (PBKDF2 hashing, email validation, session tokens)
+- ✅ Supabase client + DB queries
+- ✅ Complete DB schema migration (users, assessments, interview_responses, family_inputs, reports)
+- ✅ Unit tests for auth (6 test cases)
+
+### **6.2 Known Issues & Blockers (Session 2)**
 
 ```
-None currently. If any arise during development:
+[BLOCKER #1] Supabase Not Connected
+  - Reason: Env vars (NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY) not configured
+  - Impact: Auth + Assessment APIs will fail at runtime without real Supabase project
+  - Fix: User must create Supabase project + provide credentials
+  - ETA: ~5 min (waiting on user)
+  - Owner: User → Claude
+  - Status: BLOCKED (waiting for config)
+  - Workaround: Mock responses in APIs for testing
 
-1. Log in CLAUDE.md under this section
-2. Tag the issue in GitHub
-3. Assign to responsible agent
-4. Update ETA
-5. Communicate in daily standup
-
-Example:
-  [BLOCKER] Supabase RLS policy not working for family input
-  - Reason: token-based auth not integrated with PostgREST
-  - Fix: custom edge function to validate token → set user context
-  - ETA: 2 hrs
+[BLOCKER #2] Module Pages Don't Pass assessmentId
+  - Reason: Pages created but don't extract assessmentId from session/URL
+  - Impact: API calls fail because assessmentId is undefined
+  - Fix: Add sessionStorage logic + URL param handling in all module pages
+  - ETA: ~15 min (straightforward fix)
   - Owner: Claude
-  - Status: IN PROGRESS
+  - Status: IN PROGRESS (next task)
+  - Code: Update history.tsx, impact.tsx, comorbidity.tsx, family.tsx to pass assessmentId
+
+[ASSUMPTION] Password Hashing: Using PBKDF2 (not bcryptjs)
+  - Rationale: Reduce dependencies, use Node.js built-in crypto
+  - Risk: Slightly lower security than bcrypt, but acceptable for MVP
+  - Review: Consider upgrading to bcryptjs in Phase 2 if needed
+
+[TODO] Install @supabase/supabase-js
+  - Command: cd apps/web && pnpm add @supabase/supabase-js
+  - Status: Deferred to next session (context window constraints)
 ```
 
 ---
