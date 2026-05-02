@@ -49,7 +49,7 @@ export default function ComorbidityPage() {
         }),
       });
       if (!res.ok) throw new Error('Failed to save comorbidity');
-      router.push('/assessment/review');
+        router.push('/assessment/family');
     } catch (err) {
       alert('Error submitting. Please try again.');
       setSubmitted(false);

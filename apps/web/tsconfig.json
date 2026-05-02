@@ -5,6 +5,7 @@
     "jsx": "preserve",
     "jsxImportSource": "react",
     "resolveJsonModule": true,
+    "ignoreDeprecations": "6.0",
     "paths": {
       "@/*": ["./*"]
     }
