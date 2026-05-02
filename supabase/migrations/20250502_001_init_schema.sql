@@ -1,9 +1,4 @@
--- hex-adhd-prep Supabase Schema
--- Database: hex-adhd-prep
--- Region: Frankfurt (EU compliance)
--- Version: 1.0
-
--- Core tables for ADHD diagnostic SaaS
+-- hex-adhd-prep Supabase Schema (Frankfurt Region)
 
 CREATE TABLE IF NOT EXISTS users (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -49,78 +44,40 @@ CREATE TABLE IF NOT EXISTS reports (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- Enable RLS
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE assessments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE asrs_responses ENABLE ROW LEVEL SECURITY;
 ALTER TABLE asrs_scores ENABLE ROW LEVEL SECURITY;
 ALTER TABLE reports ENABLE ROW LEVEL SECURITY;
 
--- RLS Policies
+CREATE POLICY "users_select" ON users FOR SELECT USING (auth.uid() = id);
+CREATE POLICY "users_insert" ON users FOR INSERT WITH CHECK (auth.uid() = id);
 
--- Users: read own data
-CREATE POLICY "users_select" ON users
-  FOR SELECT USING (auth.uid() = id);
+CREATE POLICY "assessments_select" ON assessments FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "assessments_insert" ON assessments FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "assessments_update" ON assessments FOR UPDATE USING (auth.uid() = user_id);
 
-CREATE POLICY "users_insert" ON users
-  FOR INSERT WITH CHECK (auth.uid() = id);
+CREATE POLICY "asrs_responses_select" ON asrs_responses FOR SELECT USING (
+  assessment_id IN (SELECT id FROM assessments WHERE user_id = auth.uid())
+);
+CREATE POLICY "asrs_responses_insert" ON asrs_responses FOR INSERT WITH CHECK (
+  assessment_id IN (SELECT id FROM assessments WHERE user_id = auth.uid())
+);
 
--- Assessments: read/write own
-CREATE POLICY "assessments_select" ON assessments
-  FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "asrs_scores_select" ON asrs_scores FOR SELECT USING (
+  assessment_id IN (SELECT id FROM assessments WHERE user_id = auth.uid())
+);
+CREATE POLICY "asrs_scores_insert" ON asrs_scores FOR INSERT WITH CHECK (
+  assessment_id IN (SELECT id FROM assessments WHERE user_id = auth.uid())
+);
 
-CREATE POLICY "assessments_insert" ON assessments
-  FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "reports_select" ON reports FOR SELECT USING (
+  assessment_id IN (SELECT id FROM assessments WHERE user_id = auth.uid())
+);
+CREATE POLICY "reports_insert" ON reports FOR INSERT WITH CHECK (
+  assessment_id IN (SELECT id FROM assessments WHERE user_id = auth.uid())
+);
 
-CREATE POLICY "assessments_update" ON assessments
-  FOR UPDATE USING (auth.uid() = user_id);
-
--- ASRS Responses: via assessment ownership
-CREATE POLICY "asrs_responses_select" ON asrs_responses
-  FOR SELECT USING (
-    assessment_id IN (
-      SELECT id FROM assessments WHERE user_id = auth.uid()
-    )
-  );
-
-CREATE POLICY "asrs_responses_insert" ON asrs_responses
-  FOR INSERT WITH CHECK (
-    assessment_id IN (
-      SELECT id FROM assessments WHERE user_id = auth.uid()
-    )
-  );
-
--- ASRS Scores: via assessment ownership
-CREATE POLICY "asrs_scores_select" ON asrs_scores
-  FOR SELECT USING (
-    assessment_id IN (
-      SELECT id FROM assessments WHERE user_id = auth.uid()
-    )
-  );
-
-CREATE POLICY "asrs_scores_insert" ON asrs_scores
-  FOR INSERT WITH CHECK (
-    assessment_id IN (
-      SELECT id FROM assessments WHERE user_id = auth.uid()
-    )
-  );
-
--- Reports: via assessment ownership
-CREATE POLICY "reports_select" ON reports
-  FOR SELECT USING (
-    assessment_id IN (
-      SELECT id FROM assessments WHERE user_id = auth.uid()
-    )
-  );
-
-CREATE POLICY "reports_insert" ON reports
-  FOR INSERT WITH CHECK (
-    assessment_id IN (
-      SELECT id FROM assessments WHERE user_id = auth.uid()
-    )
-  );
-
--- Indexes for performance
 CREATE INDEX idx_assessments_user_id ON assessments(user_id);
 CREATE INDEX idx_assessments_status ON assessments(status);
 CREATE INDEX idx_asrs_responses_assessment_id ON asrs_responses(assessment_id);
