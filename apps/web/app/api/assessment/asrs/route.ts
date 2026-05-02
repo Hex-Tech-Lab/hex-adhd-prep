@@ -1,46 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-import { calculateASRSScores } from '@hex/logic';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-  process.env.SUPABASE_SERVICE_ROLE_KEY || ''
-);
 
 export async function POST(request: NextRequest) {
   try {
-    const { assessmentId, responses } = await request.json();
+    const { responses } = await request.json();
 
-    // Validate
-    if (!assessmentId || !responses || responses.length !== 6) {
-      return NextResponse.json(
-        { error: 'Invalid request: need assessmentId and 6 responses' },
-        { status: 400 }
-      );
+    if (!responses || responses.length !== 6) {
+      return NextResponse.json({ error: 'Invalid responses' }, { status: 400 });
     }
 
-    // Calculate scores
-    const scores = calculateASRSScores(responses);
+    const inattention = (responses[0] + responses[1] + responses[2] + responses[3]) / 4;
+    const hyperactivity = (responses[4] + responses[5]) / 2;
+    const overall = (inattention + hyperactivity) / 2;
 
-    // Store in Supabase
-    const { error } = await supabase
-      .from('asrs_scores')
-      .insert([{
-        assessment_id: assessmentId,
-        inattention_score: scores.inattentionScore,
-        hyperactivity_score: scores.hyperactivityScore,
-        overall_score: scores.overallScore,
-        risk_level: scores.riskLevel,
-      }]);
+    let riskLevel: string;
+    if (overall < 1.5) riskLevel = 'low';
+    else if (overall < 2.5) riskLevel = 'moderate';
+    else riskLevel = 'high';
 
-    if (error) throw error;
-
-    return NextResponse.json(scores, { status: 201 });
+    return NextResponse.json({
+      inattentionScore: Math.round(inattention * 100) / 100,
+      hyperactivityScore: Math.round(hyperactivity * 100) / 100,
+      overallScore: Math.round(overall * 100) / 100,
+      riskLevel,
+    });
   } catch (err) {
-    console.error('ASRS scoring error:', err);
-    return NextResponse.json(
-      { error: 'Scoring failed' },
-      { status: 500 }
-    );
+    console.error(err);
+    return NextResponse.json({ error: 'Internal error' }, { status: 500 });
   }
 }

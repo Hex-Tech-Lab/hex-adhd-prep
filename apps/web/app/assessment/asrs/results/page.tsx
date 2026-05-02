@@ -1,45 +1,31 @@
 'use client';
-
 import { useSearchParams } from 'next/navigation';
-import { useState, useEffect } from 'react';
 
 export default function ResultsPage() {
-  const searchParams = useSearchParams();
-  const assessmentId = searchParams.get('assessmentId');
-  const [scores, setScores] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const params = useSearchParams();
+  const score = parseFloat(params.get('score') || '0');
+  const risk = params.get('risk') || 'unknown';
 
-  useEffect(() => {
-    // TODO: Fetch scores from Supabase
-    setLoading(false);
-  }, [assessmentId]);
-
-  if (loading) return <p>Loading results...</p>;
+  const riskColors = { low: 'green', moderate: 'orange', high: 'red' };
+  const explanation = {
+    low: 'Your responses suggest minimal ADHD symptoms. Only a clinician can diagnose.',
+    moderate: 'Your responses suggest moderate ADHD symptoms. Consider clinical evaluation.',
+    high: 'Your responses suggest significant ADHD symptoms. We recommend clinical evaluation.',
+  };
 
   return (
-    <div className="max-w-2xl mx-auto py-8 px-4">
-      <h1 className="text-3xl font-bold mb-4">Your Assessment Results</h1>
-      <p className="text-gray-600 mb-6">Assessment ID: {assessmentId}</p>
+    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '2rem' }}>
+      <h1>Your Results</h1>
       
-      {scores && (
-        <div className="space-y-6">
-          <div className="p-6 border rounded-lg">
-            <p className="text-lg font-semibold">Risk Level: {scores.riskLevel}</p>
-            <p className="text-gray-700 mt-2">{scores.explanation}</p>
-          </div>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <div className="p-4 border rounded-lg">
-              <p className="text-sm text-gray-600">Inattention Score</p>
-              <p className="text-2xl font-bold">{scores.inattentionScore.toFixed(2)}</p>
-            </div>
-            <div className="p-4 border rounded-lg">
-              <p className="text-sm text-gray-600">Hyperactivity Score</p>
-              <p className="text-2xl font-bold">{scores.hyperactivityScore.toFixed(2)}</p>
-            </div>
-          </div>
-        </div>
-      )}
+      <div style={{ background: '#f5f5f5', padding: '1rem', borderRadius: '4px', marginBottom: '1rem' }}>
+        <p><strong>Overall Score: {score.toFixed(2)}/4</strong></p>
+        <p><strong>Risk Level: </strong><span style={{ color: riskColors[risk] }}>{risk}</span></p>
+        <p>{explanation[risk] || ''}</p>
+      </div>
+
+      <p style={{ textAlign: 'center', fontSize: '0.9rem', color: '#666' }}>
+        This tool prepares you for clinical evaluation. Only licensed clinicians can diagnose ADHD.
+      </p>
     </div>
   );
 }

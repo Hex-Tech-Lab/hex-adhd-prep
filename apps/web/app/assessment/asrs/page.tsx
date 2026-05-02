@@ -1,95 +1,100 @@
 'use client';
-
 import { useState } from 'react';
-import { ASRS_QUESTIONS, ANSWER_OPTIONS, ASRSResponse } from '@hex/types';
 import { useRouter } from 'next/navigation';
 
+const QUESTIONS = [
+  'How often do you have trouble wrapping up the final details of a project, once the challenging parts have been done?',
+  'How often do you have difficulty getting things in order when you have to do a task that requires organization?',
+  'How often do you have problems remembering appointments or obligations?',
+  'When you have a task that requires a lot of thought, how often do you avoid or delay getting started?',
+  'How often do you fidget or squirm with your hands or feet when you have to sit down for a long time?',
+  'How often do you feel overly active and compelled to do things, like you were driven by a motor?',
+];
+
+const OPTIONS = ['Never or Rarely', 'Sometimes', 'Often', 'Very Often', 'Constantly'];
+
 export default function ASRSPage() {
-  const [responses, setResponses] = useState<Record<string, number>>({});
-  const [loading, setLoading] = useState(false);
+  const [responses, setResponses] = useState(Array(6).fill(-1));
   const [submitted, setSubmitted] = useState(false);
   const router = useRouter();
 
-  const handleChange = (questionId: string, value: number) => {
-    setResponses(prev => ({ ...prev, [questionId]: value }));
+  const handleChange = (idx, val) => {
+    const newResponses = [...responses];
+    newResponses[idx] = val;
+    setResponses(newResponses);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-
+    if (responses.includes(-1)) {
+      alert('Please answer all questions');
+      return;
+    }
+    setSubmitted(true);
+    
     try {
-      const assessmentId = 'temp-assessment-id'; // TODO: get from DB
-      const formattedResponses = Object.entries(responses).map(([questionId, responseValue]) => ({
-        assessmentId,
-        questionId,
-        responseValue: responseValue as 0 | 1 | 2 | 3 | 4,
-      }));
-
-      const response = await fetch('/api/assessment/asrs', {
+      const res = await fetch('/api/assessment/asrs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ assessmentId, responses: formattedResponses }),
+        body: JSON.stringify({ responses }),
       });
-
-      if (!response.ok) throw new Error('Submission failed');
-
-      const scores = await response.json();
-      setSubmitted(true);
-
-      // Redirect to results
-      router.push(`/assessment/asrs/results?assessmentId=${assessmentId}`);
-    } catch (error) {
-      console.error('Submit error:', error);
-      alert('Failed to submit. Please try again.');
-    } finally {
-      setLoading(false);
+      const data = await res.json();
+      router.push(`/assessment/asrs/results?score=${data.overallScore}&risk=${data.riskLevel}`);
+    } catch (err) {
+      alert('Error submitting assessment');
     }
   };
 
-  const answeredCount = Object.keys(responses).length;
-  const progress = (answeredCount / ASRS_QUESTIONS.length) * 100;
+  const progress = responses.filter(r => r !== -1).length;
 
   return (
-    <div className="max-w-2xl mx-auto py-8 px-4">
-      <h1 className="text-3xl font-bold mb-2">ASRS Assessment</h1>
-      <p className="text-gray-600 mb-6">Adult ADHD Self-Report Scale (v1.1)</p>
-
-      <div className="mb-6 bg-gray-200 rounded-full h-2">
-        <div className="bg-blue-600 h-2 rounded-full transition-all" style={{ width: `${progress}%` }} />
+    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '2rem' }}>
+      <h1>ASRS Assessment</h1>
+      <p>Adult ADHD Self-Report Scale</p>
+      
+      <div style={{ background: '#ddd', borderRadius: '4px', height: '8px', marginBottom: '1rem' }}>
+        <div style={{ background: '#0066cc', height: '8px', borderRadius: '4px', width: (progress / 6) * 100 + '%', transition: 'all 0.3s' }} />
       </div>
-      <p className="text-sm text-gray-600 mb-6">Progress: {answeredCount}/{ASRS_QUESTIONS.length}</p>
+      <p>Answered: {progress}/6</p>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {ASRS_QUESTIONS.map((question, idx) => (
-          <div key={question.id} className="border-b pb-6">
-            <p className="font-semibold mb-4">
-              {idx + 1}. {question.text}
-            </p>
-            <div className="space-y-2">
-              {ANSWER_OPTIONS.map(option => (
-                <label key={option.value} className="flex items-center cursor-pointer">
+      <form onSubmit={handleSubmit}>
+        {QUESTIONS.map((q, i) => (
+          <div key={i} style={{ borderBottom: '1px solid #ddd', paddingBottom: '1rem', marginBottom: '1rem' }}>
+            <p style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>{i+1}. {q}</p>
+            <div>
+              {OPTIONS.map((opt, j) => (
+                <label key={j} style={{ display: 'block', marginBottom: '0.5rem', cursor: 'pointer' }}>
                   <input
                     type="radio"
-                    name={question.id}
-                    value={option.value}
-                    checked={responses[question.id] === option.value}
-                    onChange={() => handleChange(question.id, option.value)}
-                    className="w-4 h-4 text-blue-600"
+                    name={'q' + i}
+                    value={j}
+                    checked={responses[i] === j}
+                    onChange={() => handleChange(i, j)}
+                    style={{ marginRight: '0.5rem' }}
                   />
-                  <span className="ml-3 text-sm">{option.label}</span>
+                  {opt}
                 </label>
               ))}
             </div>
           </div>
         ))}
-
+        
         <button
           type="submit"
-          disabled={answeredCount < ASRS_QUESTIONS.length || loading}
-          className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700 transition"
+          disabled={responses.includes(-1) || submitted}
+          style={{
+            width: '100%',
+            padding: '0.75rem',
+            background: '#0066cc',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontSize: '1rem',
+            opacity: responses.includes(-1) || submitted ? 0.5 : 1,
+          }}
         >
-          {loading ? 'Submitting...' : 'Submit Assessment'}
+          {submitted ? 'Submitting...' : 'Submit'}
         </button>
       </form>
     </div>
