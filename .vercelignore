@@ -1,0 +1,7 @@
+.git
+.gitignore
+node_modules
+coverage
+.turbo
+**/*.test.ts
+**/*.spec.ts
