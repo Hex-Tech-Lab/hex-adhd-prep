@@ -10,7 +10,7 @@
     "validate": "ts-node ../../scripts/validate-specs.ts"
   },
   "devDependencies": {
-    "js-yaml": "catalog:",
-    "typescript": "catalog:"
+    "js-yaml": "4.1.0",
+    "typescript": "5.7.3"
   }
 }
