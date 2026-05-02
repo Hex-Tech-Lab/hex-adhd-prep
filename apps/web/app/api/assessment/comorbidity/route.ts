@@ -1,18 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { updateAssessment } from '@/lib/supabase-server';
 
 export async function POST(request: NextRequest) {
   try {
-    const { comorbidities, notes } = await request.json();
+    const body = await request.json();
+    const { assessmentId, comorbidities, notes } = body;
 
-    if (!Array.isArray(comorbidities)) {
-      return NextResponse.json({ error: 'Invalid comorbidities' }, { status: 400 });
+    if (!assessmentId || !Array.isArray(comorbidities)) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // TODO: Save to Supabase assessment.comorbidity_data
-    // For now, return success
+    const assessment = await updateAssessment(assessmentId, {
+      comorbidity_data: { comorbidities, notes },
+      current_section: 'review',
+      last_activity_at: new Date().toISOString(),
+    });
+
     return NextResponse.json({
       success: true,
-      data: { comorbidities, notes },
+      assessment,
     });
   } catch (err) {
     console.error(err);

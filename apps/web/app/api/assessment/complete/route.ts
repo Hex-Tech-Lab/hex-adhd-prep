@@ -1,15 +1,37 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { supabase, updateAssessment } from '@/lib/supabase-server';
 
 export async function POST(request: NextRequest) {
   try {
-    // TODO: Fetch current assessment data from session/DB
-    // Compile all sections into final report
-    // Mark assessment as complete in Supabase
-    // Generate PDF report (future: Claude Council v3.2 for Tier 2)
+    const body = await request.json();
+    const { assessmentId } = body;
+
+    if (!assessmentId) {
+      return NextResponse.json({ error: 'Missing assessmentId' }, { status: 400 });
+    }
+
+    // Fetch current assessment
+    const { data: assessment, error: fetchError } = await supabase
+      .from('assessments')
+      .select('*')
+      .eq('id', assessmentId)
+      .single();
+
+    if (fetchError || !assessment) {
+      return NextResponse.json({ error: 'Assessment not found' }, { status: 404 });
+    }
+
+    // Mark as completed
+    const completed = await updateAssessment(assessmentId, {
+      status: 'completed',
+      completed_at: new Date().toISOString(),
+      current_section: 'review',
+      last_activity_at: new Date().toISOString(),
+    });
 
     return NextResponse.json({
       success: true,
-      message: 'Assessment completed',
+      assessment: completed,
     });
   } catch (err) {
     console.error(err);

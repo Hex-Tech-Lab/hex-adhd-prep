@@ -1,18 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { updateAssessment } from '@/lib/supabase-server';
 
 export async function POST(request: NextRequest) {
   try {
-    const { familyMemberName, relationship, observations } = await request.json();
+    const body = await request.json();
+    const { assessmentId, familyMemberName, relationship, observations } = body;
 
-    if (!familyMemberName || !relationship || !observations) {
+    if (!assessmentId || !familyMemberName || !relationship || !observations) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // TODO: Save to Supabase assessment.family_data
-    // For now, return success
+    const assessment = await updateAssessment(assessmentId, {
+      family_input_provided: true,
+      family_input_completed_at: new Date().toISOString(),
+      current_section: 'history',
+      last_activity_at: new Date().toISOString(),
+    });
+
     return NextResponse.json({
       success: true,
-      data: { familyMemberName, relationship, observations },
+      assessment,
     });
   } catch (err) {
     console.error(err);

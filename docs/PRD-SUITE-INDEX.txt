@@ -1,0 +1,258 @@
+================================================================================
+ADHD DIAGNOSTIC SAAS — COMPLETE PRD SUITE
+Generated: May 2, 2026
+Status: MVP Phase 0-1 Ready for Development
+================================================================================
+
+📁 DOCUMENT STRUCTURE
+─────────────────────
+
+CORE DOCUMENTS (Read in Order):
+  1. README.md                        — Start here. Index + how to use
+  2. CLAUDE.md                        — Master control document
+  3. 01-ADHD-SAAS-PRD.md              — Product requirements
+  4. 02-TECHNICAL-ARCHITECTURE.md     — System design & API
+  5. 03-DATABASE-SCHEMA.md            — SQL migrations & RLS
+  6. 04-UI-UX-SPECIFICATION.md        — Wireframes & components
+  7. 05-LAUNCH-CHECKLIST.md           — Week-by-week gates & metrics
+
+SUPPORTING DOCUMENTS:
+  • ADHD_SaaS_Session_Full_Transcript.md     — Full Council session context
+  • council-report-ADHD-SaaS-v3.2-full.md    — Full LLM Council analysis (13 advisors)
+  • PRD-SUITE-INDEX.txt                       — This file
+
+================================================================================
+
+📊 DOCUMENT SIZES
+─────────────────
+
+01-ADHD-SAAS-PRD.md              ~1,000 lines (Product spec)
+02-TECHNICAL-ARCHITECTURE.md     ~1,200 lines (System design)
+03-DATABASE-SCHEMA.md            ~800 lines (SQL & migrations)
+04-UI-UX-SPECIFICATION.md        ~900 lines (UI components & wireframes)
+05-LAUNCH-CHECKLIST.md           ~600 lines (Week-by-week tasks)
+CLAUDE.md                         ~700 lines (Master control)
+README.md                         ~400 lines (Index & quick start)
+
+TOTAL: ~6,200 lines of executable documentation
+
+================================================================================
+
+🎯 QUICK START (Choose Your Role)
+──────────────────────────────────
+
+Backend Engineer:
+  1. Read: README.md (5 min) + CLAUDE.md (10 min)
+  2. Read: 02-TECHNICAL-ARCHITECTURE.md + 03-DATABASE-SCHEMA.md (1 hr)
+  3. See: 05-LAUNCH-CHECKLIST.md for Week 1-2 backend tasks
+  4. Start: git checkout -b [your-name]/asrs-module
+
+Frontend Engineer:
+  1. Read: README.md (5 min) + CLAUDE.md (10 min)
+  2. Read: 01-ADHD-SAAS-PRD.md + 04-UI-UX-SPECIFICATION.md (1 hr)
+  3. See: 05-LAUNCH-CHECKLIST.md for Week 1-2 frontend tasks
+  4. Start: git checkout -b [your-name]/landing-page
+
+QA/Testing:
+  1. Read: README.md (5 min) + CLAUDE.md (10 min)
+  2. Read: 01-ADHD-SAAS-PRD.md + 05-LAUNCH-CHECKLIST.md (45 min)
+  3. Build: Test matrix for Week 1-2 gates
+
+Product Manager:
+  1. Read: README.md (5 min) + CLAUDE.md (10 min)
+  2. Read: 01-ADHD-SAAS-PRD.md + 05-LAUNCH-CHECKLIST.md (1 hr)
+  3. Track: Phase 0-1 progress against gates
+
+LLM (Claude/GPT) Being Asked to Code:
+  1. Start: CLAUDE.md (master context)
+  2. Jump: To relevant doc (PRD / Architecture / Schema / UI / Checklist)
+  3. Execute: Immediately (no clarifying questions needed)
+  4. Follow: Workflow in CLAUDE.md section 2.3
+
+================================================================================
+
+🔒 TECH STACK (FROZEN)
+──────────────────────
+
+Frontend:     Next.js 15, Tailwind CSS, shadcn/ui, TypeScript
+Backend:      Node.js 20+, Next.js API Routes, Anthropic Claude
+Database:     Supabase PostgreSQL 15+ (with pgvector)
+Cache:        Upstash Redis (managed)
+Deployment:   Vercel (serverless, auto-scaling)
+CI/CD:        GitHub Actions + CodeRabbit + Snyk
+Package Mgr:  pnpm (locked versions)
+
+No exceptions. No substitutions.
+
+================================================================================
+
+✅ SUCCESS CRITERIA (Phase 0-1 Gates)
+─────────────────────────────────────
+
+Week 1:  ASRS module live
+  ├─ FCP: <2 sec
+  ├─ Coverage: ≥80%
+  └─ Users: 100+ with <1% drop-off
+
+Week 2:  Interview + Family modules live
+  ├─ Time: 45 ± 10 min
+  ├─ NPS: ≥50
+  └─ No crashes (P0=0)
+
+Week 3:  Clinical validation complete
+  ├─ Concordance: ≥80% (10 closed-loop cases)
+  ├─ Security: 0 high-severity issues
+  └─ Code: ≥80% coverage
+
+Week 4:  Public beta launch
+  ├─ Uptime: 99.5%+
+  ├─ Clinician directory: 20+ verified providers
+  └─ All gates passing
+
+All must PASS. If any FAIL: fix + re-test.
+
+================================================================================
+
+🚀 TIMELINE
+───────────
+
+Week 1:   Foundation + ASRS module
+Week 2:   AI interview + family input + report generation
+Week 3:   Clinical validation + code review + security scan
+Week 4:   Clinician directory + final QA + public beta launch
+
+Total: 4 weeks to MVP public beta
+
+================================================================================
+
+📚 WHAT EACH DOCUMENT COVERS
+──────────────────────────────
+
+README.md
+  └─ Index, quick start guides, how to use this suite
+
+CLAUDE.md (MASTER — read first)
+  ├─ Project context (what we're building, why)
+  ├─ Tech stack (frozen, non-negotiable)
+  ├─ Database overview
+  ├─ API quick reference
+  ├─ Development workflow
+  ├─ Guardrails & constraints
+  ├─ Communication & escalation
+  └─ Future roadmap
+
+01-ADHD-SAAS-PRD.md (PRODUCT)
+  ├─ Executive summary
+  ├─ Scope (what's in, what's out)
+  ├─ User flows (7 detailed flows with wireframes)
+  ├─ Acceptance criteria (by module)
+  ├─ Technical requirements (overview)
+  ├─ Data & privacy
+  ├─ Launch checklist
+  └─ Glossary & definitions
+
+02-TECHNICAL-ARCHITECTURE.md (SYSTEM DESIGN)
+  ├─ System overview diagram
+  ├─ Frontend architecture (folder structure, components)
+  ├─ Backend architecture (API routes, all endpoints)
+  ├─ Claude integration (interview agent, Council v3.2)
+  ├─ API specification (auth, assessment, interview, family, report, council)
+  ├─ Rate limiting & caching
+  ├─ CI/CD pipeline (GitHub Actions, Vercel)
+  ├─ Performance & monitoring
+  ├─ Security (auth, encryption, secrets)
+  └─ Local development setup
+
+03-DATABASE-SCHEMA.md (DATA LAYER)
+  ├─ Migration 001 (core tables: users, assessments, interview_responses, family_inputs, reports, clinicians, referrals, audit_logs, response_embeddings)
+  ├─ Migration 002 (seed clinician data)
+  ├─ Migration 003 (stored procedures & triggers)
+  ├─ Data validation & constraints
+  ├─ Backup & disaster recovery
+  └─ Performance tuning
+
+04-UI-UX-SPECIFICATION.md (FRONTEND DESIGN)
+  ├─ Design tokens (colors, typography, spacing)
+  ├─ Wireframes (landing, onboarding, ASRS, interview, family, report, directory)
+  ├─ Component patterns (shadcn/ui implementation)
+  ├─ Responsive design breakpoints
+  ├─ Tailwind configuration
+  ├─ Animations & transitions
+  ├─ Accessibility (WCAG 2.1 AA)
+  └─ Component inventory
+
+05-LAUNCH-CHECKLIST.md (PROJECT MANAGEMENT)
+  ├─ Week 1 tasks (foundation, ASRS)
+  ├─ Week 2 tasks (interview, family, report)
+  ├─ Week 3 tasks (validation, code review, security)
+  ├─ Week 4 tasks (directory, QA, launch)
+  ├─ Validation gates for each week
+  ├─ Phase 2 preparation
+  ├─ Metrics & reporting
+  └─ Rollback & contingency
+
+================================================================================
+
+🎯 WHAT'S FROZEN (Cannot change without approval)
+───────────────────────────────────────────────────
+
+✓ Tech stack
+✓ Business model ($49/$199)
+✓ Market (North America first)
+✓ Core features (ASRS, interview, family, report, directory)
+✓ Safety boundaries ("Preparation only", not diagnosis)
+✓ Database schema
+✓ API endpoints
+
+What CAN change: UI polish, question wording, validation rules, performance optimizations
+
+================================================================================
+
+🛠 HOW TO USE (Development Workflow)
+─────────────────────────────────────
+
+1. Read CLAUDE.md (master context)
+2. Read your domain doc (backend/frontend/qa/product)
+3. git checkout -b [your-name]/[feature]
+4. Implement + test (pnpm dev, pnpm test, pnpm lint)
+5. git commit + git push
+6. Create PR (CodeRabbit auto-reviews)
+7. Merge when approved (Vercel auto-deploys)
+8. Monitor Sentry for 24 hrs
+9. Update CLAUDE.md with progress
+
+All detailed in CLAUDE.md section 2.3
+
+================================================================================
+
+📞 SUPPORT
+──────────
+
+Questions?
+  1. Check CLAUDE.md (it probably answers it)
+  2. Check the relevant PRD doc
+  3. Ask in daily standup
+  4. Open GitHub issue tagged [question]
+  5. DM K. for urgent issues
+
+Don't:
+  - Invent solutions not in the PRD
+  - Skip sections
+  - Assume decisions that aren't explicit
+
+================================================================================
+
+✨ FINAL WORDS
+──────────────
+
+This PRD is COMPLETE, FROZEN, and EXECUTABLE.
+
+Every decision is documented.
+Every edge case is covered.
+Every tech choice is justified.
+
+You have EVERYTHING you need.
+
+**Start with README.md or CLAUDE.md. Pick your domain. Go build.**
+
+================================================================================
