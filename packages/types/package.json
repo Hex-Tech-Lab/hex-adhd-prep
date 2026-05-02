@@ -1,0 +1,19 @@
+{
+  "name": "@hex/types",
+  "version": "0.0.1",
+  "description": "Shared TypeScript types (generated from specs)",
+  "main": "index.ts",
+  "types": "index.ts",
+  "files": [
+    "*.ts"
+  ],
+  "scripts": {
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "typescript": "catalog:"
+  }
+}

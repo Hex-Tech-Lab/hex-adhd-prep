@@ -1,0 +1,85 @@
+version: '1.0'
+name: ADHD Scoring Algorithm
+description: Rules for computing subscale scores and risk classification
+
+scoring_algorithm:
+  subscales:
+    inattention:
+      formula: 'mean(Q1, Q2, Q3, Q4)'
+      description: Average of inattention questions
+      min_score: 0
+      max_score: 4
+
+    hyperactivity:
+      formula: 'mean(Q5, Q6)'
+      description: Average of hyperactivity questions
+      min_score: 0
+      max_score: 4
+
+  overall_score:
+    formula: 'mean(inattention, hyperactivity)'
+    description: Overall ADHD symptom severity
+    min_score: 0
+    max_score: 4
+
+risk_classification:
+  inattention:
+    low:
+      threshold: '< 1.5'
+      description: Minimal inattention symptoms
+      probability_adhd: '10%'
+
+    moderate:
+      threshold: '>= 1.5 and < 2.5'
+      description: Mild to moderate inattention
+      probability_adhd: '45%'
+
+    high:
+      threshold: '>= 2.5'
+      description: Significant inattention symptoms
+      probability_adhd: '75%'
+
+  hyperactivity:
+    low:
+      threshold: '< 1.5'
+      description: Minimal hyperactivity/impulsivity
+      probability_adhd: '10%'
+
+    moderate:
+      threshold: '>= 1.5 and < 2.5'
+      description: Mild to moderate hyperactivity
+      probability_adhd: '45%'
+
+    high:
+      threshold: '>= 2.5'
+      description: Significant hyperactivity/impulsivity
+      probability_adhd: '75%'
+
+  overall:
+    low:
+      threshold: '< 1.5'
+      description: Low ADHD symptom severity
+      recommended_action: 'May not require clinical evaluation'
+      color: '#4CAF50'
+
+    moderate:
+      threshold: '>= 1.5 and < 2.5'
+      description: Moderate ADHD symptom severity
+      recommended_action: 'Consider clinical evaluation'
+      color: '#FF9800'
+
+    high:
+      threshold: '>= 2.5'
+      description: High ADHD symptom severity
+      recommended_action: 'Strongly recommend clinical evaluation'
+      color: '#F44336'
+
+explanations:
+  low: 'Your responses suggest minimal ADHD symptoms. However, only a clinician can provide a diagnosis.'
+  moderate: 'Your responses suggest moderate ADHD symptoms. A clinical evaluation is recommended.'
+  high: 'Your responses suggest significant ADHD symptoms. We strongly recommend scheduling a clinical evaluation.'
+
+notes:
+  - 'Scoring is clinical-adjacent, not diagnostic'
+  - 'Always refer to clinician for final diagnosis'
+  - 'This tool prepares patients for evaluation'

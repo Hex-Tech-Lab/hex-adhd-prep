@@ -1,0 +1,39 @@
+{
+  "version": "1",
+  "extends": ["//"],
+  "globalDependencies": [
+    "tsconfig.json",
+    ".eslintrc",
+    ".prettierrc"
+  ],
+  "pipeline": {
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "build": {
+      "outputs": [".next/**", "dist/**"],
+      "dependsOn": ["^build", "^type-check"]
+    },
+    "test": {
+      "outputs": ["coverage/**"],
+      "cache": false
+    },
+    "test:coverage": {
+      "outputs": ["coverage/**"]
+    },
+    "lint": {
+      "outputs": [".eslintcache"]
+    },
+    "lint:fix": {
+      "cache": false
+    },
+    "type-check": {
+      "cache": false
+    },
+    "clean": {
+      "cache": false
+    }
+  },
+  "ui": "tui"
+}

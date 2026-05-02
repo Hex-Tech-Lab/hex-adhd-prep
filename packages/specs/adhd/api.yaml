@@ -1,0 +1,138 @@
+version: '1.0'
+name: ADHD Assessment API
+description: RESTful API for ASRS questionnaire submission and scoring
+
+base_url: '/api/assessment'
+auth_required: true
+
+endpoints:
+  - id: submit_asrs
+    method: POST
+    path: '/asrs'
+    description: 'Submit ASRS responses and receive scoring'
+    
+    request:
+      type: object
+      required:
+        - assessment_id
+        - responses
+      properties:
+        assessment_id:
+          type: string
+          format: uuid
+          description: 'Unique assessment identifier'
+
+        responses:
+          type: object
+          description: 'Map of question ID to numeric response'
+          example:
+            Q1: 2
+            Q2: 3
+            Q3: 1
+            Q4: 2
+            Q5: 3
+            Q6: 2
+
+        user_id:
+          type: string
+          format: uuid
+          description: 'Optional user ID'
+
+    response:
+      type: object
+      properties:
+        assessment_id:
+          type: string
+          format: uuid
+
+        subscale_scores:
+          type: object
+          properties:
+            inattention:
+              type: number
+              min: 0
+              max: 4
+
+            hyperactivity:
+              type: number
+              min: 0
+              max: 4
+
+        overall_score:
+          type: number
+          min: 0
+          max: 4
+
+        risk_level:
+          type: string
+          enum: [low, moderate, high]
+
+        explanation:
+          type: string
+
+        created_at:
+          type: string
+          format: iso8601
+
+    errors:
+      - status: 400
+        code: VALIDATION_ERROR
+        message: 'Invalid response format'
+
+      - status: 401
+        code: UNAUTHORIZED
+        message: 'Authentication required'
+
+      - status: 500
+        code: INTERNAL_ERROR
+        message: 'Server error during scoring'
+
+  - id: get_assessment
+    method: GET
+    path: '/asrs/{assessment_id}'
+    description: 'Retrieve previous assessment results'
+
+    parameters:
+      - name: assessment_id
+        in: path
+        required: true
+        type: string
+        format: uuid
+
+    response:
+      type: object
+      properties:
+        assessment_id:
+          type: string
+          format: uuid
+
+        user_id:
+          type: string
+          format: uuid
+
+        subscale_scores:
+          type: object
+
+        overall_score:
+          type: number
+
+        risk_level:
+          type: string
+
+        created_at:
+          type: string
+          format: iso8601
+
+authentication:
+  type: bearer
+  header: Authorization
+  format: 'Bearer {token}'
+
+rate_limiting:
+  requests_per_minute: 60
+  requests_per_hour: 1000
+
+notes:
+  - 'All timestamps are in UTC'
+  - 'Assessment results are stored encrypted'
+  - 'User data is isolated via RLS policies'

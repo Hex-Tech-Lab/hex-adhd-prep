@@ -1,0 +1,51 @@
+{
+  "name": "@hex/web",
+  "version": "0.0.1",
+  "private": true,
+  "description": "ADHD-Prep MVP web application (Next.js)",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint . --ext .ts,.tsx",
+    "lint:fix": "eslint . --ext .ts,.tsx --fix",
+    "type-check": "tsc --noEmit",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "dependencies": {
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "next": "catalog:",
+    "typescript": "catalog:",
+    "@hex/types": "workspace:*",
+    "@hex/logic": "workspace:*",
+    "@hex/ui": "workspace:*",
+    "@hex/hooks": "workspace:*",
+    "@hex/config": "workspace:*",
+    "@hex/api-client": "workspace:*",
+    "tailwindcss": "catalog:",
+    "@tailwindcss/forms": "catalog:",
+    "clsx": "catalog:",
+    "tailwind-merge": "catalog:",
+    "zod": "catalog:",
+    "axios": "catalog:",
+    "zustand": "catalog:",
+    "pino": "catalog:"
+  },
+  "devDependencies": {
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@types/node": "catalog:",
+    "@types/jest": "catalog:",
+    "@testing-library/react": "catalog:",
+    "@testing-library/jest-dom": "catalog:",
+    "jest": "catalog:",
+    "jest-environment-jsdom": "catalog:",
+    "ts-jest": "catalog:",
+    "eslint": "catalog:",
+    "@typescript-eslint/eslint-plugin": "catalog:",
+    "@typescript-eslint/parser": "catalog:",
+    "prettier": "catalog:"
+  }
+}

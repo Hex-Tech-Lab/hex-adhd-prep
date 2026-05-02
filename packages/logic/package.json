@@ -1,0 +1,26 @@
+{
+  "name": "@hex/logic",
+  "version": "0.0.1",
+  "description": "Scoring engine and validation logic (generated from specs)",
+  "main": "index.ts",
+  "types": "index.ts",
+  "files": [
+    "*.ts",
+    "__tests__/**"
+  ],
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hex/types": "workspace:*",
+    "@hex/config": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/jest": "catalog:",
+    "jest": "catalog:",
+    "ts-jest": "catalog:",
+    "typescript": "catalog:"
+  }
+}

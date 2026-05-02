@@ -1,0 +1,16 @@
+{
+  "name": "@hex/specs",
+  "version": "0.0.1",
+  "description": "YAML specifications (single source of truth)",
+  "files": [
+    "adhd/**/*.yaml",
+    "README.md"
+  ],
+  "scripts": {
+    "validate": "ts-node ../../scripts/validate-specs.ts"
+  },
+  "devDependencies": {
+    "js-yaml": "catalog:",
+    "typescript": "catalog:"
+  }
+}

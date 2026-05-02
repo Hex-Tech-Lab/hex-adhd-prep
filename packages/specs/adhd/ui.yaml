@@ -1,0 +1,126 @@
+version: '1.0'
+name: ADHD Assessment UI Specification
+description: Component structure and layout for questionnaire and results
+
+screens:
+  - id: questionnaire_screen
+    name: ASRS Questionnaire
+    path: '/assessment/asrs'
+    description: 'Display ASRS questions and collect responses'
+
+    components:
+      - type: ProgressBar
+        props:
+          current: '{currentQuestion}'
+          total: '{totalQuestions}'
+          label: 'Progress'
+
+      - type: QuestionCard
+        props:
+          question: '{currentQuestion}'
+          questionText: '{question.text}'
+          answerType: 'likert_5'
+          options:
+            - label: 'Never or Rarely'
+              value: 0
+            - label: 'Sometimes'
+              value: 1
+            - label: 'Often'
+              value: 2
+            - label: 'Very Often'
+              value: 3
+            - label: 'Constantly'
+              value: 4
+
+      - type: Button
+        props:
+          label: 'Next'
+          onClick: 'nextQuestion()'
+          disabled: '{!responseSelected}'
+
+      - type: Button
+        props:
+          label: 'Previous'
+          onClick: 'previousQuestion()'
+          disabled: '{isFirstQuestion}'
+
+  - id: results_screen
+    name: ASRS Results
+    path: '/assessment/asrs/results'
+    description: 'Display scoring results and risk classification'
+
+    components:
+      - type: ScoreCard
+        props:
+          title: 'Overall ADHD Symptom Severity'
+          score: '{overallScore}'
+          maxScore: 4
+          riskLevel: '{riskLevel}'
+          color: '{riskColor}'
+
+      - type: SubscaleBreakdown
+        props:
+          subscales:
+            - name: 'Inattention'
+              score: '{inattentionScore}'
+              riskLevel: '{inattentionRisk}'
+
+            - name: 'Hyperactivity/Impulsivity'
+              score: '{hyperactivityScore}'
+              riskLevel: '{hyperactivityRisk}'
+
+      - type: ExplanationCard
+        props:
+          title: 'What does this mean?'
+          text: '{explanation}'
+          riskLevel: '{riskLevel}'
+
+      - type: RecommendationCard
+        props:
+          title: 'Next Steps'
+          action: '{recommendedAction}'
+          cta: 'Find a Clinician'
+          cta_link: '/assessment/directory'
+
+styling:
+  color_scheme:
+    primary: '#2563EB'
+    secondary: '#64748B'
+    success: '#10B981'
+    warning: '#F59E0B'
+    danger: '#EF4444'
+    low_risk: '#4CAF50'
+    moderate_risk: '#FF9800'
+    high_risk: '#F44336'
+
+  spacing:
+    section_gap: '2rem'
+    question_gap: '1.5rem'
+    padding: '1.5rem'
+
+  typography:
+    question_size: '1.25rem'
+    answer_size: '1rem'
+    title_size: '1.875rem'
+
+responsive:
+  mobile:
+    breakpoint: '< 768px'
+    layout: 'single_column'
+    full_width: true
+
+  tablet:
+    breakpoint: '768px - 1024px'
+    layout: 'single_column'
+    padding: '2rem'
+
+  desktop:
+    breakpoint: '> 1024px'
+    layout: 'max_width_600px'
+    centered: true
+
+accessibility:
+  aria_labels: true
+  keyboard_navigation: true
+  high_contrast: true
+  focus_visible: true
