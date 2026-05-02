@@ -1,0 +1,7 @@
+{
+  "projectId": "prj_hex_adhd_prep",
+  "orgId": "team_techhypexps",
+  "buildCommand": "pnpm build",
+  "devCommand": "pnpm dev",
+  "outputDirectory": ".next"
+}
