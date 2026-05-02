@@ -19,9 +19,10 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    const { supabase, updateAssessment } = await import('@/lib/supabase-server');
+    const { getSupabaseClient, updateAssessment } = await import('@/lib/supabase-server');
 
     // Fetch current assessment to verify it exists
+    const supabase = getSupabaseClient();
     const { data: assessment, error: fetchError } = await supabase
       .from('assessments')
       .select('*')

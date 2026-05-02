@@ -3,19 +3,11 @@
  */
 
 import { POST } from '../assessment/complete/route';
-import { supabase, updateAssessment } from '@/lib/supabase-server';
+import { getSupabaseClient, updateAssessment } from '@/lib/supabase-server';
 import { NextRequest } from 'next/server';
 
 jest.mock('@/lib/supabase-server', () => ({
-  supabase: {
-    from: jest.fn(() => ({
-      select: jest.fn(() => ({
-        eq: jest.fn(() => ({
-          single: jest.fn(),
-        })),
-      })),
-    })),
-  },
+  getSupabaseClient: jest.fn(),
   updateAssessment: jest.fn(),
 }));
 
@@ -40,7 +32,8 @@ describe('Complete API Route', () => {
         })),
       };
 
-      (supabase.from as jest.Mock).mockReturnValue(mockSelect);
+      const mockSupabase = { from: jest.fn().mockReturnValue(mockSelect) };
+      (getSupabaseClient as jest.Mock).mockReturnValue(mockSupabase);
       (updateAssessment as jest.Mock).mockResolvedValue({
         id: 'test-assessment-id',
         status: 'completed',
@@ -100,7 +93,8 @@ describe('Complete API Route', () => {
         })),
       };
 
-      (supabase.from as jest.Mock).mockReturnValue(mockSelect);
+      const mockSupabase = { from: jest.fn().mockReturnValue(mockSelect) };
+      (getSupabaseClient as jest.Mock).mockReturnValue(mockSupabase);
 
       const request = new NextRequest('http://localhost/api/assessment/complete', {
         method: 'POST',
@@ -122,30 +116,8 @@ describe('Complete API Route', () => {
       process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-key';
 
       const mockSelect = { eq: jest.fn().mockReturnValue({ single: jest.fn().mockResolvedValue({ data: { id: 'test-assessment-id' }, error: null }) }) };
-      (supabase.from as jest.Mock).mockReturnValue(mockSelect);
-      (updateAssessment as jest.Mock).mockRejectedValue(new Error('Database error'));
-
-      const request = new NextRequest('http://localhost/api/assessment/complete', {
-        method: 'POST',
-        body: JSON.stringify({ assessmentId: 'test-assessment-id' }),
-      });
-
-      const response = await POST(request);
-      const data = await response.json();
-
-      expect(response.status).toBe(500);
-      expect(data.error).toBe('Internal error');
-
-      delete process.env.NEXT_PUBLIC_SUPABASE_URL;
-      delete process.env.SUPABASE_SERVICE_ROLE_KEY;
-    });
-
-    it('should return 500 when updateAssessment throws (with Supabase)', async () => {
-      process.env.NEXT_PUBLIC_SUPABASE_URL = 'test-url';
-      process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-key';
-
-      const mockSelect = { eq: jest.fn().mockReturnValue({ single: jest.fn().mockResolvedValue({ data: { id: 'test-assessment-id' }, error: null }) }) };
-      (supabase.from as jest.Mock).mockReturnValue(mockSelect);
+      const mockSupabase = { from: jest.fn().mockReturnValue(mockSelect) };
+      (getSupabaseClient as jest.Mock).mockReturnValue(mockSupabase);
       (updateAssessment as jest.Mock).mockRejectedValue(new Error('Database error'));
 
       const request = new NextRequest('http://localhost/api/assessment/complete', {

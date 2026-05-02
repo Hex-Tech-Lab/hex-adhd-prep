@@ -5,11 +5,15 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
 function getSupabase() {
   if (!supabaseUrl || !supabaseServiceKey) {
-    throw new Error('Missing Supabase environment variables');
+    throw new Error('Missing Supabase environment variables. Configure NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY, or run in demo mode.');
   }
   return createClient(supabaseUrl, supabaseServiceKey, {
     auth: { persistSession: false },
   });
+}
+
+export function getSupabaseClient() {
+  return getSupabase();
 }
 
 export async function getUserByEmail(email: string) {
