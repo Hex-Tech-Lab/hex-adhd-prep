@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyPassword, validateEmail, generateSessionToken } from '@/lib/auth';
-import { getUserByEmail } from '@/lib/supabase-server';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { email, password } = body;
 
-    // Validation
     if (!email || !password) {
       return NextResponse.json(
         { error: 'Missing required fields: email, password' },
@@ -22,40 +20,54 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get user
-    const user = await getUserByEmail(email);
-    if (!user) {
+    const hasSupabase = !!(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
+
+    if (hasSupabase) {
+      const { getUserByEmail } = await import('@/lib/supabase-server');
+
+      const user = await getUserByEmail(email);
+      if (!user) {
+        return NextResponse.json(
+          { error: 'Invalid email or password' },
+          { status: 401 }
+        );
+      }
+
+      const isValid = verifyPassword(password, user.password_hash);
+      if (!isValid) {
+        return NextResponse.json(
+          { error: 'Invalid email or password' },
+          { status: 401 }
+        );
+      }
+
+      const sessionToken = generateSessionToken();
+
       return NextResponse.json(
-        { error: 'Invalid email or password' },
-        { status: 401 }
-      );
-    }
-
-    // Verify password
-    const isValid = verifyPassword(password, user.password_hash);
-    if (!isValid) {
-      return NextResponse.json(
-        { error: 'Invalid email or password' },
-        { status: 401 }
-      );
-    }
-
-    // Generate session token
-    const sessionToken = generateSessionToken();
-
-    // Return success response
-    return NextResponse.json(
-      {
-        success: true,
-        user: {
-          id: user.id,
-          email: user.email,
-          age: user.age,
-          tier: user.tier,
+        {
+          success: true,
+          user: { id: user.id, email: user.email, age: user.age, tier: user.tier },
+          sessionToken,
         },
-        sessionToken,
-      },
-      { status: 200 }
+        { status: 200 }
+      );
+    }
+
+    if (email === 'demo@test.com' && password === 'demo12345') {
+      return NextResponse.json(
+        {
+          success: true,
+          user: { id: 'demo-user-id', email, age: 30, tier: '49' },
+          sessionToken: generateSessionToken(),
+          note: 'Demo mode'
+        },
+        { status: 200 }
+      );
+    }
+
+    return NextResponse.json(
+      { error: 'Demo mode: use email=demo@test.com password=demo12345' },
+      { status: 401 }
     );
   } catch (error) {
     console.error('Login error:', error);

@@ -1,8 +1,14 @@
 'use client';
 import { useRouter } from 'next/navigation';
+import { getAssessmentId } from '@/lib/session';
 
 export default function StartPage() {
   const router = useRouter();
+
+  const handleStart = () => {
+    getAssessmentId();
+    router.push('/assessment/asrs');
+  };
 
   return (
     <div style={{ maxWidth: '600px', margin: '0 auto', padding: '2rem' }}>
@@ -24,7 +30,7 @@ export default function StartPage() {
       </div>
 
       <button
-        onClick={() => router.push('/assessment/asrs')}
+        onClick={handleStart}
         style={{
           width: '100%',
           padding: '0.75rem',

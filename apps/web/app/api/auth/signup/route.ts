@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { hashPassword, validateEmail, generateSessionToken } from '@/lib/auth';
-import { createUser, createAssessment, getUserByEmail } from '@/lib/supabase-server';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { email, password, age } = body;
 
-    // Validation
     if (!email || !password || !age) {
       return NextResponse.json(
         { error: 'Missing required fields: email, password, age' },
@@ -36,39 +34,43 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if user exists
-    const existingUser = await getUserByEmail(email);
-    if (existingUser) {
+    const hasSupabase = !!(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
+
+    if (hasSupabase) {
+      const { createUser, createAssessment, getUserByEmail } = await import('@/lib/supabase-server');
+
+      const existingUser = await getUserByEmail(email);
+      if (existingUser) {
+        return NextResponse.json(
+          { error: 'User with this email already exists' },
+          { status: 409 }
+        );
+      }
+
+      const passwordHash = hashPassword(password);
+      const user = await createUser(email, passwordHash, age);
+      const assessment = await createAssessment(user.id, '49');
+      const sessionToken = generateSessionToken();
+
       return NextResponse.json(
-        { error: 'User with this email already exists' },
-        { status: 409 }
+        {
+          success: true,
+          user: { id: user.id, email: user.email, age: user.age },
+          assessment: { id: assessment.id, tier: assessment.tier },
+          sessionToken,
+        },
+        { status: 201 }
       );
     }
 
-    // Hash password and create user
-    const passwordHash = hashPassword(password);
-    const user = await createUser(email, passwordHash, age);
-
-    // Create initial assessment (Tier $49)
-    const assessment = await createAssessment(user.id, '49');
-
-    // Generate session token
     const sessionToken = generateSessionToken();
-
-    // Return success response
     return NextResponse.json(
       {
         success: true,
-        user: {
-          id: user.id,
-          email: user.email,
-          age: user.age,
-        },
-        assessment: {
-          id: assessment.id,
-          tier: assessment.tier,
-        },
+        user: { id: 'demo-user-id', email, age },
+        assessment: { id: 'demo-assessment-id', tier: '49' },
         sessionToken,
+        note: 'Demo mode - DB not connected'
       },
       { status: 201 }
     );

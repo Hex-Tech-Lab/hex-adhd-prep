@@ -1,15 +1,29 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 const RELATIONSHIPS = ['Parent', 'Sibling', 'Spouse/Partner', 'Close Friend', 'Other'];
+
+function getOrCreateAssessmentId(): string {
+  let id = sessionStorage.getItem('assessmentId');
+  if (!id) {
+    id = crypto.randomUUID();
+    sessionStorage.setItem('assessmentId', id);
+  }
+  return id;
+}
 
 export default function FamilyPage() {
   const [familyMemberName, setFamilyMemberName] = useState('');
   const [relationship, setRelationship] = useState('');
   const [observations, setObservations] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [assessmentId, setAssessmentId] = useState<string | null>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    setAssessmentId(getOrCreateAssessmentId());
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,7 +37,7 @@ export default function FamilyPage() {
       const res = await fetch('/api/assessment/family', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ familyMemberName, relationship, observations }),
+        body: JSON.stringify({ assessmentId, familyMemberName, relationship, observations }),
       });
       if (!res.ok) throw new Error('Failed to save family input');
       router.push('/assessment/review');
@@ -37,6 +51,7 @@ export default function FamilyPage() {
 
   return (
     <div style={{ maxWidth: '600px', margin: '0 auto', padding: '2rem' }}>
+      <p style={{ color: '#0066cc', fontWeight: 'bold', marginBottom: '0.5rem' }}>Step 5 of 5: Family</p>
       <h1>Family & Friend Perspective</h1>
       <p style={{ color: '#666', marginBottom: '2rem' }}>
         People who know you well often notice patterns you might miss. This helps clinicians get a complete picture.

@@ -1,10 +1,24 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+
+function getOrCreateAssessmentId(): string {
+  let id = sessionStorage.getItem('assessmentId');
+  if (!id) {
+    id = crypto.randomUUID();
+    sessionStorage.setItem('assessmentId', id);
+  }
+  return id;
+}
 
 export default function ReviewPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [assessmentId, setAssessmentId] = useState<string | null>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    setAssessmentId(getOrCreateAssessmentId());
+  }, []);
 
   const handleSubmitAssessment = async () => {
     setSubmitted(true);
@@ -12,6 +26,7 @@ export default function ReviewPage() {
       const res = await fetch('/api/assessment/complete', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ assessmentId }),
       });
       if (!res.ok) throw new Error('Failed to complete assessment');
       // Redirect to results or clinician directory
@@ -24,6 +39,7 @@ export default function ReviewPage() {
 
   return (
     <div style={{ maxWidth: '600px', margin: '0 auto', padding: '2rem' }}>
+      <p style={{ color: '#0066cc', fontWeight: 'bold', marginBottom: '0.5rem' }}>Assessment Complete</p>
       <h1>Review Your Assessment</h1>
       <p style={{ color: '#666', marginBottom: '2rem' }}>
         You've completed all sections of your ADHD pre-assessment. Review the information below and submit when ready.

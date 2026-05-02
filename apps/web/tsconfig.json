@@ -4,7 +4,10 @@
     "baseUrl": ".",
     "jsx": "preserve",
     "jsxImportSource": "react",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "paths": {
+      "@/*": ["./*"]
+    }
   },
   "include": [
     "next-env.d.ts",

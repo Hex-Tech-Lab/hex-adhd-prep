@@ -1,16 +1,30 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 const ONSET_OPTIONS = ['Before age 7', 'Ages 7-12', 'Ages 12-18', 'After age 18', 'Unsure'];
 const SCHOOL_PERFORMANCE = ['Excellent', 'Good', 'Average', 'Below average', 'Struggled'];
+
+function getOrCreateAssessmentId(): string {
+  let id = sessionStorage.getItem('assessmentId');
+  if (!id) {
+    id = crypto.randomUUID();
+    sessionStorage.setItem('assessmentId', id);
+  }
+  return id;
+}
 
 export default function HistoryPage() {
   const [onset, setOnset] = useState('');
   const [schoolPerformance, setSchoolPerformance] = useState('');
   const [childTraits, setChildTraits] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [assessmentId, setAssessmentId] = useState<string | null>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    setAssessmentId(getOrCreateAssessmentId());
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,7 +38,7 @@ export default function HistoryPage() {
       const res = await fetch('/api/assessment/history', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ onset, schoolPerformance, childTraits }),
+        body: JSON.stringify({ assessmentId, onset, schoolPerformance, childTraits }),
       });
       if (!res.ok) throw new Error('Failed to save history');
       router.push('/assessment/impact');
@@ -38,6 +52,7 @@ export default function HistoryPage() {
 
   return (
     <div style={{ maxWidth: '600px', margin: '0 auto', padding: '2rem' }}>
+      <p style={{ color: '#0066cc', fontWeight: 'bold', marginBottom: '0.5rem' }}>Step 2 of 5: History</p>
       <h1>Childhood & Early History</h1>
       <p style={{ color: '#666', marginBottom: '2rem' }}>
         Understanding your childhood can help identify patterns of ADHD symptoms.

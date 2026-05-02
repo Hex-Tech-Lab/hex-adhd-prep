@@ -1,13 +1,27 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+
+function getOrCreateAssessmentId(): string {
+  let id = sessionStorage.getItem('assessmentId');
+  if (!id) {
+    id = crypto.randomUUID();
+    sessionStorage.setItem('assessmentId', id);
+  }
+  return id;
+}
 
 export default function ImpactPage() {
   const [workImpact, setWorkImpact] = useState('');
   const [relationshipImpact, setRelationshipImpact] = useState('');
   const [biggestChallenge, setBiggestChallenge] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [assessmentId, setAssessmentId] = useState<string | null>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    setAssessmentId(getOrCreateAssessmentId());
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,7 +35,7 @@ export default function ImpactPage() {
       const res = await fetch('/api/assessment/impact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ workImpact, relationshipImpact, biggestChallenge }),
+        body: JSON.stringify({ assessmentId, workImpact, relationshipImpact, biggestChallenge }),
       });
       if (!res.ok) throw new Error('Failed to save impact');
       router.push('/assessment/comorbidity');
@@ -35,6 +49,7 @@ export default function ImpactPage() {
 
   return (
     <div style={{ maxWidth: '600px', margin: '0 auto', padding: '2rem' }}>
+      <p style={{ color: '#0066cc', fontWeight: 'bold', marginBottom: '0.5rem' }}>Step 3 of 5: Impact</p>
       <h1>Life Impact & Challenges</h1>
       <p style={{ color: '#666', marginBottom: '2rem' }}>
         Understanding how ADHD symptoms affect your daily life helps clinicians make accurate assessments.

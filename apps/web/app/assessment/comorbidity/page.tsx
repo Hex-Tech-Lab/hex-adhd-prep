@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 const COMORBIDITIES = [
@@ -10,11 +10,25 @@ const COMORBIDITIES = [
   { id: 'sleep', label: 'Sleep Issues' },
 ];
 
+function getOrCreateAssessmentId(): string {
+  let id = sessionStorage.getItem('assessmentId');
+  if (!id) {
+    id = crypto.randomUUID();
+    sessionStorage.setItem('assessmentId', id);
+  }
+  return id;
+}
+
 export default function ComorbidityPage() {
   const [checked, setChecked] = useState<Record<string, boolean>>({});
   const [notes, setNotes] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [assessmentId, setAssessmentId] = useState<string | null>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    setAssessmentId(getOrCreateAssessmentId());
+  }, []);
 
   const handleCheck = (id: string) => {
     setChecked((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -29,6 +43,7 @@ export default function ComorbidityPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          assessmentId,
           comorbidities: Object.keys(checked).filter((k) => checked[k]),
           notes,
         }),
@@ -43,6 +58,7 @@ export default function ComorbidityPage() {
 
   return (
     <div style={{ maxWidth: '600px', margin: '0 auto', padding: '2rem' }}>
+      <p style={{ color: '#0066cc', fontWeight: 'bold', marginBottom: '0.5rem' }}>Step 4 of 5: Comorbidity</p>
       <h1>Other Conditions</h1>
       <p style={{ color: '#666', marginBottom: '2rem' }}>
         ADHD often co-occurs with other conditions. Checking these helps clinicians understand your full picture.

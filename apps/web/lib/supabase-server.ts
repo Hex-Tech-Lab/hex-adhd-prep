@@ -3,15 +3,17 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
-if (!supabaseUrl || !supabaseServiceKey) {
-  throw new Error('Missing Supabase environment variables');
+function getSupabase() {
+  if (!supabaseUrl || !supabaseServiceKey) {
+    throw new Error('Missing Supabase environment variables');
+  }
+  return createClient(supabaseUrl, supabaseServiceKey, {
+    auth: { persistSession: false },
+  });
 }
 
-export const supabase = createClient(supabaseUrl, supabaseServiceKey, {
-  auth: { persistSession: false },
-});
-
 export async function getUserByEmail(email: string) {
+  const supabase = getSupabase();
   const { data, error } = await supabase
     .from('users')
     .select('*')
@@ -23,6 +25,7 @@ export async function getUserByEmail(email: string) {
 }
 
 export async function createUser(email: string, passwordHash: string, age: number) {
+  const supabase = getSupabase();
   const { data, error } = await supabase
     .from('users')
     .insert([
@@ -40,6 +43,7 @@ export async function createUser(email: string, passwordHash: string, age: numbe
 }
 
 export async function createAssessment(userId: string, tier: '49' | '199') {
+  const supabase = getSupabase();
   const { data, error } = await supabase
     .from('assessments')
     .insert([
@@ -58,6 +62,7 @@ export async function createAssessment(userId: string, tier: '49' | '199') {
 }
 
 export async function getAssessment(assessmentId: string, userId: string) {
+  const supabase = getSupabase();
   const { data, error } = await supabase
     .from('assessments')
     .select('*')
@@ -70,6 +75,7 @@ export async function getAssessment(assessmentId: string, userId: string) {
 }
 
 export async function updateAssessment(assessmentId: string, updates: Record<string, any>) {
+  const supabase = getSupabase();
   const { data, error } = await supabase
     .from('assessments')
     .update(updates)

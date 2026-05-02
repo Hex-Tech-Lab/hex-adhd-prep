@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase, updateAssessment } from '@/lib/supabase-server';
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,7 +9,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing assessmentId' }, { status: 400 });
     }
 
-    // Fetch current assessment
+    const hasSupabase = !!(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
+
+    if (!hasSupabase) {
+      return NextResponse.json({
+        success: true,
+        status: 'completed',
+        note: 'Demo mode - data not persisted'
+      });
+    }
+
+    const { supabase, updateAssessment } = await import('@/lib/supabase-server');
+
+    // Fetch current assessment to verify it exists
     const { data: assessment, error: fetchError } = await supabase
       .from('assessments')
       .select('*')
@@ -21,7 +32,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Assessment not found' }, { status: 404 });
     }
 
-    // Mark as completed
     const completed = await updateAssessment(assessmentId, {
       status: 'completed',
       completed_at: new Date().toISOString(),
