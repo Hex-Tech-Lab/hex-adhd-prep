@@ -1,15 +1,8 @@
 {
-  "name": "hex-adhd-prep",
-  "version": "0.0.1",
   "buildCommand": "pnpm build",
   "devCommand": "pnpm dev",
-  "env": {
-    "NODE_ENV": "production",
-    "LOG_LEVEL": "info"
-  },
-  "envFile": [".env.production.local"],
-  "framework": "nextjs",
-  "regions": ["sfo1"],
+  "outputDirectory": ".next",
+  "nodeVersion": "24.x",
   "functions": {
     "api/**": {
       "maxDuration": 10
