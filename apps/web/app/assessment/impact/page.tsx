@@ -14,7 +14,7 @@ export default function ImpactPage() {
   const [biggestChallenge, setBiggestChallenge] = useState('');
   const { assessmentId } = useAssessmentId();
   const progress = useAssessmentProgress('impact');
-  const router = useRouter();
+  useRouter(); // Router available but not used in this phase
 
   const validateForm = (data: ImpactFormData) => {
     return !!(data.workImpact?.trim() && data.relationshipImpact?.trim() && data.biggestChallenge?.trim());

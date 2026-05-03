@@ -6,10 +6,10 @@ function ResultsContent() {
   const params = useSearchParams();
   const router = useRouter();
   const score = parseFloat(params.get('score') || '0');
-  const risk = params.get('risk') || 'unknown';
+  const risk = (params.get('risk') || 'unknown') as 'low' | 'moderate' | 'high' | string;
 
-  const riskColors = { low: 'green', moderate: 'orange', high: 'red' };
-  const explanation = {
+  const riskColors: Record<string, string> = { low: 'green', moderate: 'orange', high: 'red' };
+  const explanation: Record<string, string> = {
     low: 'Your responses suggest minimal ADHD symptoms. Only a clinician can diagnose.',
     moderate: 'Your responses suggest moderate ADHD symptoms. Consider clinical evaluation.',
     high: 'Your responses suggest significant ADHD symptoms. We recommend clinical evaluation.',

@@ -21,7 +21,7 @@ export default function ComorbidityPage() {
   const [notes, setNotes] = useState('');
   const { assessmentId } = useAssessmentId();
   const progress = useAssessmentProgress('comorbidity');
-  const router = useRouter();
+  useRouter(); // Router available but not used in this phase
 
   const validateForm = (data: ComorbidityFormData) => {
     return Array.isArray(data.comorbidities);

@@ -1,7 +1,6 @@
-import type { Metadata, ReactNode } from 'react';
 import './globals.css';
 
-export const metadata: Metadata = {
+export const metadata = {
   title: 'ADHD-Prep | Assessment & Preparation Tool',
   description: 'Comprehensive ADHD assessment platform to prepare for diagnostic interviews',
   viewport: 'width=device-width, initial-scale=1',
@@ -9,10 +8,10 @@ export const metadata: Metadata = {
 };
 
 interface RootLayoutProps {
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
-export default function RootLayout({ children }: RootLayoutProps): JSX.Element {
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-50 transition-colors">

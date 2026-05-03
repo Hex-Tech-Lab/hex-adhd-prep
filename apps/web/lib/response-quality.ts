@@ -5,12 +5,12 @@
  */
 
 export interface ResponseQuality {
-  score: 0-100; // Overall quality score
+  score: number; // Overall quality score (0-100)
   length: 'too_short' | 'adequate' | 'detailed';
   specificity: 'vague' | 'specific' | 'detailed';
   relevance: 'off_topic' | 'relevant' | 'highly_relevant';
   clarity: 'unclear' | 'clear' | 'very_clear';
-  confidence: 0-100; // Confidence in the score
+  confidence: number; // Confidence in the score (0-100)
 }
 
 export interface QualityFeedback {
@@ -53,8 +53,8 @@ export function scoreResponseQuality(responseText: string, expectedMinLength: nu
     clarity: { unclear: 40, clear: 75, very_clear: 100 }[clarity],
   };
 
-  const score = Math.round((scores.length * 0.2 + scores.specificity * 0.3 + scores.relevance * 0.3 + scores.clarity * 0.2) as unknown as number) as 0-100;
-  const confidence = Math.min(80 + wordCount * 5, 100) as 0-100; // Higher confidence with more data
+  const score = Math.round(scores.length * 0.2 + scores.specificity * 0.3 + scores.relevance * 0.3 + scores.clarity * 0.2);
+  const confidence = Math.min(80 + wordCount * 5, 100); // Higher confidence with more data
 
   return { score, length, specificity, relevance, clarity, confidence };
 }

@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     }
 
     const { updateAssessment } = await import('@/lib/supabase-server');
-    const assessment = await updateAssessment(assessmentId, {
+    await updateAssessment(assessmentId, {
       asrs_part_a_score: Math.round(inattention * 100) / 100,
       asrs_part_b_score: Math.round(hyperactivity * 100) / 100,
       asrs_total_score: Math.round(overallScore * 100) / 100,

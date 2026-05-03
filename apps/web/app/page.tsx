@@ -1,12 +1,6 @@
 'use client';
-import { useEffect, useState } from 'react';
 
-export default function Home(): JSX.Element {
-  const [isDark, setIsDark] = useState<boolean>(false);
-
-  useEffect(() => {
-    setIsDark(document.documentElement.classList.contains('dark'));
-  }, []);
+export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-500 via-indigo-600 to-blue-600 dark:from-slate-900 dark:via-purple-900 dark:to-slate-900 text-white px-4 py-8 flex items-center justify-center">

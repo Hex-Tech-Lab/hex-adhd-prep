@@ -23,7 +23,7 @@ export function useFormSubmission<T extends AssessmentFormData>(
     setError(null);
 
     try {
-      const response = await apiPost(endpoint, formData);
+      await apiPost(endpoint, formData);
       router.push(nextRoute);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'An error occurred';

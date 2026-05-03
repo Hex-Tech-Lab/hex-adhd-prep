@@ -1,4 +1,4 @@
-export function calculateASRSScore(responses) {
+export function calculateASRSScore(responses: number[]) {
   if (!Array.isArray(responses) || responses.length !== 6) {
     throw new Error('6 responses required');
   }
@@ -18,13 +18,13 @@ export function calculateASRSScore(responses) {
   };
 }
 
-export function calculateRiskLevel(overallScore) {
+export function calculateRiskLevel(overallScore: number) {
   if (overallScore < 1.5) return 'low';
   if (overallScore < 2.5) return 'moderate';
   return 'high';
 }
 
-export function validateASRSResponses(responses) {
+export function validateASRSResponses(responses: number[]) {
   if (!Array.isArray(responses)) return false;
   if (responses.length !== 6) return false;
   return responses.every(r => typeof r === 'number' && r >= 0 && r <= 4);

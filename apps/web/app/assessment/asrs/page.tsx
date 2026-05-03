@@ -1,5 +1,5 @@
 'use client';
-import { useState, useCallback, useRef, FormEvent } from 'react';
+import { useState, useCallback, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 
 const QUESTIONS = [
@@ -13,12 +13,11 @@ const QUESTIONS = [
 
 const OPTIONS = ['Never or Rarely', 'Sometimes', 'Often', 'Very Often', 'Constantly'];
 
-export default function ASRSPage(): JSX.Element {
+export default function ASRSPage() {
   const [responses, setResponses] = useState<number[]>(Array(6).fill(-1));
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const submitTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleChange = useCallback((idx: number, val: number): void => {
     setResponses((prev) => {

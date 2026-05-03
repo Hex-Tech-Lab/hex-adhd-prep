@@ -23,7 +23,7 @@ export default function FamilyPage() {
   const [observations, setObservations] = useState('');
   const { assessmentId } = useAssessmentId();
   const progress = useAssessmentProgress('family');
-  const router = useRouter();
+  useRouter(); // Router available but not used in this phase
 
   const validateForm = (data: FamilyFormData) => {
     return !!(data.familyMemberName?.trim() && data.relationship && data.observations?.trim());

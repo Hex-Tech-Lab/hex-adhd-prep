@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { hashPassword, validateEmail, generateSessionToken } from '@/lib/auth';
+import { hashPassword, generateSessionToken } from '@/lib/auth';
 import {
   validateAndSanitizeEmail,
   validateAndSanitizePassword,

@@ -30,7 +30,7 @@ export default function HistoryPage() {
   const [childTraits, setChildTraits] = useState('');
   const { assessmentId } = useAssessmentId();
   const progress = useAssessmentProgress('history');
-  const router = useRouter();
+  useRouter(); // Router available but not used in this phase
 
   const validateForm = (data: HistoryFormData) => {
     return !!(data.onset && data.schoolPerformance && data.childTraits?.trim());
