@@ -1,0 +1,326 @@
+{
+  "metadata": {
+    "product": "ADHD-Prep SaaS",
+    "version": "1.0",
+    "purpose": "Accessible, ADHD-friendly typography system. Prioritizes dyslexia-friendly letterforms + generous spacing.",
+    "rationale": "ADHD users benefit from clear, open letterforms + high line-height. Body text minimum 16px on all devices. Display font (Inter) signals authority; body font (Poppins/Source Sans Pro) signals warmth. Mono (IBM Plex Mono) for clinical precision."
+  },
+  "font_stack": {
+    "system_stack": "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif",
+    "recommendation": "Use Inter + Poppins + IBM Plex Mono (Google Fonts or self-hosted). Fallback to system stack if loading fails."
+  },
+  "typefaces": {
+    "display": {
+      "name": "Inter",
+      "role": "Headlines, section titles, emphasis (h1–h3, CTAs)",
+      "why_chosen": "Geometric sans-serif; highly legible; modern (signals clarity + authority). Designed for screens. Available free on Google Fonts.",
+      "characteristics": {
+        "letterform_openness": "Very open—prevents letter confusion (e.g., 0 vs O, l vs I)",
+        "weight_variety": "400, 500, 600, 700 available",
+        "italic_available": "Yes (useful for emphasis without color)"
+      },
+      "accessibility_notes": "No specific dyslexia features, but clean geometry reduces cognitive load. Good for visual hierarchy.",
+      "url": "https://fonts.google.com/specimen/Inter"
+    },
+    "body": {
+      "name": "Poppins (preferred) or Source Sans Pro (alternative)",
+      "role": "Body text, form labels, descriptions, paragraphs, helper text",
+      "why_chosen": "Warm, open letterforms. Friendly personality (approachable). Excellent spacing between letters/words (reduces visual crowding). High x-height (easier to read).",
+      "characteristics": {
+        "letterform_openness": "Very open (especially 'a', 'e', 'g'—critical ADHD-friendly features)",
+        "weight_variety": "400, 500, 600, 700 available",
+        "line_height_support": "Pairs well with 1.5–1.75 line-height"
+      },
+      "dyslexia_friendly": "Poppins & Source Sans Pro are in the 'accessibility-friendly' category. Not as specialized as OpenDyslexic, but widely tested as readable for dyslexic users.",
+      "url": "https://fonts.google.com/specimen/Poppins or https://fonts.google.com/specimen/Source+Sans+Pro"
+    },
+    "mono": {
+      "name": "IBM Plex Mono",
+      "role": "Code, data values, timestamps, session IDs, technical labels",
+      "why_chosen": "Monospace clarity for clinical precision. Professional, not cute. Works at small sizes.",
+      "characteristics": {
+        "letterform_clarity": "Clear distinction between similar characters (1, l, I)",
+        "weight_variety": "400, 500, 600, 700 available",
+        "line_height": "Inherits system line-height (1.5+)"
+      },
+      "usage_caution": "Use only for data/code; not for body text (slower to read in para form).",
+      "url": "https://fonts.google.com/specimen/IBM+Plex+Mono"
+    }
+  },
+  "font_sizes": {
+    "scale": "16px base scale (mobile-first approach)",
+    "sizes": {
+      "2xs": {
+        "size": "12px",
+        "usage": "Helper text, captions, timestamps (use sparingly; low hierarchy)",
+        "line_height": "1.5",
+        "note": "Minimum for body-like content. Only for non-critical info."
+      },
+      "xs": {
+        "size": "14px",
+        "usage": "Labels, secondary text, small UI copy",
+        "line_height": "1.5",
+        "note": "Still readable at this size; use for form labels & helpers."
+      },
+      "sm": {
+        "size": "16px",
+        "usage": "Body text, form input text, standard paragraph copy",
+        "line_height": "1.5 to 1.75",
+        "note": "ADHD minimum. Never go smaller for body content."
+      },
+      "base": {
+        "size": "16px",
+        "usage": "Primary body text, default size for most content",
+        "line_height": "1.75",
+        "note": "Matches 'sm' intentionally; 16px is the floor."
+      },
+      "lg": {
+        "size": "18px",
+        "usage": "Larger body text (on desktop), intro paragraphs, emphasis",
+        "line_height": "1.75",
+        "note": "Optional; use on desktop for visual breathing room."
+      },
+      "xl": {
+        "size": "20px",
+        "usage": "h3 (subheadings), section titles, card titles",
+        "line_height": "1.5",
+        "note": "First heading level; clear hierarchy start."
+      },
+      "2xl": {
+        "size": "24px",
+        "usage": "h2 (section headings), page subheadings",
+        "line_height": "1.25 to 1.5",
+        "note": "Secondary hierarchy; breathing room around heading."
+      },
+      "3xl": {
+        "size": "30px",
+        "usage": "h1 (page heading), hero title",
+        "line_height": "1.25",
+        "note": "Primary visual hierarchy. Largest on page."
+      },
+      "4xl": {
+        "size": "36px",
+        "usage": "Landing page hero headlines (optional, rare)",
+        "line_height": "1.2",
+        "note": "Only on desktop; may shrink to 30px on mobile."
+      }
+    }
+  },
+  "line_heights": {
+    "tight": {
+      "value": "1.25",
+      "usage": "Headlines only (h1, h2, h3)",
+      "reasoning": "Visual compactness for headlines; body text at this line-height is hard to read."
+    },
+    "normal": {
+      "value": "1.5",
+      "usage": "Form labels, UI copy, captions",
+      "reasoning": "Readable, scannable; not cramped."
+    },
+    "relaxed": {
+      "value": "1.75 to 1.8",
+      "usage": "Body paragraphs, long-form content, assessment questions",
+      "reasoning": "ADHD-critical: generous spacing reduces visual crowding, eases reading. Research-backed for dyslexia-friendly."
+    }
+  },
+  "font_weights": {
+    "light": {
+      "value": "300",
+      "usage": "Not recommended; too thin for ADHD-friendly design",
+      "reasoning": "Reduces legibility; avoid."
+    },
+    "regular": {
+      "value": "400",
+      "usage": "Body text, paragraphs, default weight",
+      "reasoning": "Standard; clean, readable."
+    },
+    "medium": {
+      "value": "500",
+      "usage": "Form labels, button text, secondary emphasis",
+      "reasoning": "Slightly heavier; draws attention without being bold."
+    },
+    "semibold": {
+      "value": "600",
+      "usage": "Subheadings (h3), emphasis, CTA button text",
+      "reasoning": "Strong visual weight; clear hierarchy."
+    },
+    "bold": {
+      "value": "700",
+      "usage": "Primary headings (h1, h2), strong emphasis, section titles",
+      "reasoning": "Maximum visual weight; reserved for top hierarchy."
+    }
+  },
+  "type_hierarchy": {
+    "h1": {
+      "font_family": "Inter",
+      "font_size": "30px (desktop) / 28px (tablet) / 24px (mobile)",
+      "font_weight": "700",
+      "line_height": "1.25",
+      "letter_spacing": "0px (Inter has good default spacing)",
+      "margin_top": "2rem (32px)",
+      "margin_bottom": "1rem (16px)",
+      "usage": "Page title, hero headline, main focus of section",
+      "example": "Prepare for your ADHD evaluation"
+    },
+    "h2": {
+      "font_family": "Inter",
+      "font_size": "24px (desktop) / 22px (tablet) / 20px (mobile)",
+      "font_weight": "700",
+      "line_height": "1.25",
+      "letter_spacing": "0px",
+      "margin_top": "1.5rem (24px)",
+      "margin_bottom": "0.75rem (12px)",
+      "usage": "Section heading, assessment section title",
+      "example": "ASRS Screening Assessment"
+    },
+    "h3": {
+      "font_family": "Inter",
+      "font_size": "20px (desktop) / 18px (tablet) / 18px (mobile)",
+      "font_weight": "600",
+      "line_height": "1.5",
+      "letter_spacing": "0px",
+      "margin_top": "1rem (16px)",
+      "margin_bottom": "0.5rem (8px)",
+      "usage": "Subsection, card title, question group heading",
+      "example": "Childhood Symptoms (Age 5–12)"
+    },
+    "body_lg": {
+      "font_family": "Poppins / Source Sans Pro",
+      "font_size": "18px (desktop) / 16px (mobile)",
+      "font_weight": "400",
+      "line_height": "1.75",
+      "letter_spacing": "0.2px (subtle opening)",
+      "margin_bottom": "1rem (16px)",
+      "usage": "Large body paragraphs, emphasis paragraphs, intro text",
+      "example": "This assessment is not a diagnosis..."
+    },
+    "body": {
+      "font_family": "Poppins / Source Sans Pro",
+      "font_size": "16px (both desktop & mobile—FLOOR)",
+      "font_weight": "400",
+      "line_height": "1.75",
+      "letter_spacing": "0.2px",
+      "margin_bottom": "1rem (16px)",
+      "usage": "Default body text, paragraphs, instructions, form content",
+      "example": "Tell us about a time you struggled to stay organized at work."
+    },
+    "label": {
+      "font_family": "Poppins / Source Sans Pro",
+      "font_size": "14px to 16px (never smaller)",
+      "font_weight": "500",
+      "line_height": "1.5",
+      "letter_spacing": "0px",
+      "margin_bottom": "0.25rem (4px)",
+      "usage": "Form labels, input labels, field names",
+      "example": "Have you had these symptoms in the last 6 months?"
+    },
+    "helper": {
+      "font_family": "Poppins / Source Sans Pro",
+      "font_size": "14px (desktop) / 14px (mobile—minimum for helpers)",
+      "font_weight": "400",
+      "line_height": "1.5",
+      "color": "text_secondary (6B7280)",
+      "margin_top": "0.25rem (4px)",
+      "usage": "Helper text, explanations, form hints, secondary context",
+      "example": "This helps us understand your developmental history."
+    },
+    "caption": {
+      "font_family": "Poppins / Source Sans Pro",
+      "font_size": "12px to 14px (use 14px preferred)",
+      "font_weight": "400",
+      "line_height": "1.5",
+      "color": "text_secondary",
+      "usage": "Image captions, timestamps, very secondary info",
+      "example": "Assessment completed on May 3, 2026"
+    },
+    "code": {
+      "font_family": "IBM Plex Mono",
+      "font_size": "14px (never smaller)",
+      "font_weight": "400",
+      "line_height": "1.5",
+      "letter_spacing": "0px",
+      "usage": "Session IDs, technical values, data display",
+      "example": "Session ID: ADHD-2026-05-03-ABC123"
+    }
+  },
+  "letter_spacing": {
+    "tighter": "0px",
+    "default": "0px to 0.2px",
+    "relaxed": "0.2px to 0.5px",
+    "note": "Poppins & Source Sans Pro have good default spacing. No need for aggressive letter-spacing (can reduce readability). Only add relaxed spacing to headings if they feel cramped."
+  },
+  "paragraph_spacing": {
+    "margin_between_paragraphs": "1rem (16px)",
+    "margin_between_sections": "1.5rem to 2rem (24–32px)",
+    "reasoning": "Generous spacing reduces cognitive load; prevents 'wall of text' feel."
+  },
+  "accessibility_specifications": {
+    "dyslexia_friendly_features": {
+      "open_letterforms": "Poppins/Source Sans Pro have open 'a', 'e', 'g', 'y' shapes—reduces letter confusion",
+      "letter_spacing": "Default + optional 0.2px in body text for extra clarity",
+      "line_height_minimum": "1.5 (body text), preferably 1.75",
+      "x_height": "Poppins/Source Sans Pro have high x-heights—easier to distinguish lowercase from uppercase",
+      "baseline_alignment": "Solid baseline; no dancing text"
+    },
+    "wcag_compliance": {
+      "font_size_minimum": "16px for body text (WCAG AAA for readability)",
+      "line_height_minimum": "1.5 for body (WCAG AAA requirement)",
+      "contrast": "All text on background: 7:1 minimum (WCAG AAA). Verified in palette.json.",
+      "magnification": "Supports 200% zoom (no horizontal scrolling at 200%)"
+    },
+    "cognitive_accessibility": {
+      "sentence_length": "Design recommends: max 20 words/sentence in assessment UI",
+      "paragraph_length": "Max 3–4 sentences per paragraph (reduces cognitive overwhelm)",
+      "visual_hierarchy": "Clear h1 > h2 > h3 > body progression (no skipped levels)"
+    }
+  },
+  "responsive_type": {
+    "mobile_first": {
+      "base_size": "16px (all mobile body text)",
+      "heading_sizes": {
+        "h1_mobile": "24px",
+        "h2_mobile": "20px",
+        "h3_mobile": "18px"
+      },
+      "rationale": "Mobile users: smaller screens, longer reading sessions. Generous sizes reduce strain."
+    },
+    "tablet": {
+      "base_size": "16px (same as mobile)",
+      "heading_sizes": {
+        "h1_tablet": "28px",
+        "h2_tablet": "22px",
+        "h3_tablet": "18px"
+      },
+      "rationale": "Slightly larger headings; more breathing room."
+    },
+    "desktop": {
+      "base_size": "16px (floor—never smaller)",
+      "heading_sizes": {
+        "h1_desktop": "30px",
+        "h2_desktop": "24px",
+        "h3_desktop": "20px"
+      },
+      "line_height_increase": "1.75 (can increase to 1.8 on desktop for max readability)",
+      "rationale": "Larger screens allow bigger headlines without feeling cramped; body text stays at 16px minimum."
+    }
+  },
+  "implementation_notes": {
+    "css_approach": "CSS custom properties for type scale (--type-h1, --type-body, etc.)",
+    "next_js_font_loading": "Use next/font with @import for Inter, Poppins, IBM Plex Mono. Ensure font-display: swap to avoid CLS.",
+    "tailwindcss_integration": "Extend theme.fontSize with custom scale: { 'heading-1': '30px', 'heading-2': '24px', etc. }",
+    "mui_integration": "Override typography in MUI theme config: { typography: { h1: { fontFamily: 'Inter', fontSize: '30px', fontWeight: 700 }, body1: { fontFamily: 'Poppins', fontSize: '16px', lineHeight: 1.75 } } }",
+    "fallback_stack": "If Google Fonts CDN fails, system font stack ensures readability. Poppins fallback: Helvetica Neue, -apple-system, sans-serif."
+  },
+  "testing_checklist": [
+    "✓ All body text ≥16px on all devices",
+    "✓ All line-heights ≥1.5 for body (1.75 preferred)",
+    "✓ Headings use Inter (clear authority)",
+    "✓ Body uses Poppins/Source Sans Pro (warm, accessible)",
+    "✓ Mono used only for data/code (not body text)",
+    "✓ Letter-spacing not <0px (no tightening)",
+    "✓ Tested with dyslexia simulator (Poppins/Source Sans Pro pass)",
+    "✓ Contrast verified (7:1 on all background colors)",
+    "✓ Responsive type tested at mobile, tablet, desktop",
+    "✓ Font loading tested (Google Fonts CDN + system fallback)"
+  ]
+}

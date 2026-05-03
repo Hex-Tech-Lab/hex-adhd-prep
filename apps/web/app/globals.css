@@ -24,6 +24,22 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 221.2 83.2% 53.3%;
     --radius: 0.5rem;
+
+    /* ADHD-Prep design system colors */
+    --sage: 91 19% 38%;
+    --sage-dark: 91 19% 28%;
+    --sage-light: 91 19% 92%;
+    --cream: 42 15% 93%;
+    --cream-lighter: 42 15% 96%;
+    --cream-darker: 42 15% 85%;
+    --coral: 12 78% 58%;
+    --coral-dark: 12 78% 45%;
+    --coral-light: 12 78% 78%;
+    --blue: 201 100% 45%;
+    --text-primary: 222.2 84% 4.9%;
+    --text-secondary: 215.4 16.3% 46.9%;
+    --text-tertiary: 215.4 16.3% 65.1%;
+    --focus: 91 19% 28%;
   }
 
   .dark {
@@ -66,4 +82,41 @@
       transition-duration: 0.01ms !important;
     }
   }
+}
+
+@layer utilities {
+  /* ADHD-Prep design system color utilities */
+  .text-sage { color: hsl(var(--sage)); }
+  .text-sage-dark { color: hsl(var(--sage-dark)); }
+  .text-sage-light { color: hsl(var(--sage-light)); }
+  .bg-sage { background-color: hsl(var(--sage)); }
+  .bg-sage-dark { background-color: hsl(var(--sage-dark)); }
+  .bg-sage-light { background-color: hsl(var(--sage-light)); }
+  .border-sage { border-color: hsl(var(--sage)); }
+  .ring-sage { --tw-ring-color: hsl(var(--sage)); }
+  .ring-sage-dark { --tw-ring-color: hsl(var(--sage-dark)); }
+
+  .text-coral { color: hsl(var(--coral)); }
+  .text-coral-dark { color: hsl(var(--coral-dark)); }
+  .text-coral-light { color: hsl(var(--coral-light)); }
+  .bg-coral { background-color: hsl(var(--coral)); }
+  .bg-coral-dark { background-color: hsl(var(--coral-dark)); }
+  .bg-coral-light { background-color: hsl(var(--coral-light)); }
+  .border-coral { border-color: hsl(var(--coral)); }
+
+  .text-blue { color: hsl(var(--blue)); }
+  .bg-blue { background-color: hsl(var(--blue)); }
+  .border-blue { border-color: hsl(var(--blue)); }
+
+  .text-cream { color: hsl(var(--cream)); }
+  .bg-cream { background-color: hsl(var(--cream)); }
+  .border-cream { border-color: hsl(var(--cream)); }
+
+  .text-cream-lighter { color: hsl(var(--cream-lighter)); }
+  .bg-cream-lighter { background-color: hsl(var(--cream-lighter)); }
+  .border-cream-lighter { border-color: hsl(var(--cream-lighter)); }
+
+  .text-cream-darker { color: hsl(var(--cream-darker)); }
+  .bg-cream-darker { background-color: hsl(var(--cream-darker)); }
+  .border-cream-darker { border-color: hsl(var(--cream-darker)); }
 }
