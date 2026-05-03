@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 // Note: framer-motion should be installed for animations
 // import { motion, useReducedMotion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -13,6 +13,8 @@ const motion = {
   main: ({ children, className, ...props }: any) => <main className={className} {...props}>{children}</main>,
   section: ({ children, className, ...props }: any) => <section className={className} {...props}>{children}</section>,
   aside: ({ children, className, ...props }: any) => <aside className={className} {...props}>{children}</aside>,
+  h1: ({ children, className, ...props }: any) => <h1 className={className} {...props}>{children}</h1>,
+  p: ({ children, className, ...props }: any) => <p className={className} {...props}>{children}</p>,
 };
 
 const useReducedMotion = () => false;
@@ -152,10 +154,10 @@ function SidePanel({ accent = 'coral' }: SidePanelProps) {
   useEffect(() => {
     if (shouldReduceMotion) {
       setRevealed(true);
-    } else {
-      const timer = setTimeout(() => setRevealed(true), 100);
-      return () => clearTimeout(timer);
+      return;
     }
+    const timer = setTimeout(() => setRevealed(true), 100);
+    return () => clearTimeout(timer);
   }, [shouldReduceMotion]);
 
   const accentColor = accent === 'blue' ? 'blue' : 'coral';
@@ -274,15 +276,15 @@ export default function LandingHero({ className }: LandingHeroProps) {
   useEffect(() => {
     if (shouldReduceMotion) {
       setStage(4); // Show all elements immediately
-    } else {
-      const timeouts = [
-        setTimeout(() => setStage(1), 80),
-        setTimeout(() => setStage(2), 220),
-        setTimeout(() => setStage(3), 360),
-        setTimeout(() => setStage(4), 500),
-      ];
-      return () => timeouts.forEach(clearTimeout);
+      return;
     }
+    const timeouts = [
+      setTimeout(() => setStage(1), 80),
+      setTimeout(() => setStage(2), 220),
+      setTimeout(() => setStage(3), 360),
+      setTimeout(() => setStage(4), 500),
+    ];
+    return () => timeouts.forEach(clearTimeout);
   }, [shouldReduceMotion]);
 
   const trustCards = [
@@ -419,7 +421,7 @@ export default function LandingHero({ className }: LandingHeroProps) {
                 stage >= 4 ? 'opacity-100' : 'opacity-0'
               )}
             >
-              {trustCards.map((card, i) => (
+              {trustCards.map((card) => (
                 <TrustCard
                   key={card.iconKey}
                   iconKey={card.iconKey}
