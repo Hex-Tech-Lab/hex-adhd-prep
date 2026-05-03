@@ -454,18 +454,28 @@ WEEK 4: Launch
   - When Supabase not configured: Returns success with note: "Demo mode - data not persisted"
   - When Supabase configured: Full database operations
 
-[BLOCKER #1] Supabase Credentials (Still Pending)
-  - Reason: NEXT_PUBLIC_SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY needed for production
-  - Impact: Currently running in demo mode (no data persistence)
-  - Fix: User creates Supabase project, provides credentials
-  - ETA: ~5 min once credentials provided
-  - Status: WAITING ON USER
-  - Workaround: Demo mode fully functional for development
+[BLOCKER #1] Vercel pnpm Deployment (Session 4 - CRITICAL)
+  - Reason: 20+ deployment attempts with `pnpm install` exiting with code 1, no detailed error
+  - Root Cause: Version mismatch (local Node 22, Vercel Node 24) + pnpm environment drift
+  - Impact: Cannot deploy to production; blocking all user-facing features
+  - Attempted Fixes: pnpm 9 vs 10, Node version flexibility, lockfile regeneration, .npmrc configs
+  - Status: BLOCKER - Requires strategy change, not config tweaks
+  - Next Action: 
+    * Option A: Pre-build .next locally, commit artifacts, Vercel serves only
+    * Option B: Use GitHub Actions to build, Vercel deploys pre-built
+    * Option C: Contact Vercel support for pnpm 9.12.3 monorepo compatibility
+  - Lessons Learned: Stop troubleshooting after 3-4 failed attempts; use root cause analysis
+  - Commits: 20+ deployment fixes (93a49f4...fb5c5b6) tracked in git history
+
+[RESOLVED] Supabase Credentials (Session 4)
+  - Status: FIXED - Credentials provided, migration files exist
+  - SQL: supabase/migrations/20250503_002_complete_schema.sql ready
+  - Next: Manual `supabase db push` once Vercel deployment works
 
 [MINOR] Agent Manager Performance
-  - Issue: Parallel agents launched but completion rate low
-  - Impact: Manual execution required for some tasks
-  - Status: MONITORED - Will optimize agent workflows in future sessions
+  - Issue: Parallel agents not fully utilized
+  - Impact: Some tasks require manual execution
+  - Status: MONITORED
 ```
 
 ---
@@ -728,6 +738,15 @@ All Claude integration in **02-TECHNICAL-ARCHITECTURE.md** (section 3.2)
 ## 14. CHANGE LOG
 
 ```
+v2.1 (2026-05-03 Session 4 - DEPLOYMENT BLOCKED)
+  - Vercel pnpm deployment BLOCKER identified (20+ failed attempts)
+  - Root cause: Node version mismatch (local 22 vs Vercel 24) + pnpm environment drift
+  - All code changes committed to main (13 commits for deployment troubleshooting)
+  - SQL migrations prepared: supabase/migrations/20250503_002_complete_schema.sql
+  - pnpm-lock.yaml tracked in git (for reproducible builds)
+  - Lessons learned: Stop troubleshooting after 3-4 attempts, use systems thinking
+  - Next action: Pre-build locally or use GitHub Actions for Vercel deployment
+
 v2.0 (2026-05-03)
   - MVP Phase 0-1 COMPLETE - Production Ready
   - Codebase refactored with modern React patterns
