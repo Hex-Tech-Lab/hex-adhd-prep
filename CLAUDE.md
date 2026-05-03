@@ -738,6 +738,20 @@ All Claude integration in **02-TECHNICAL-ARCHITECTURE.md** (section 3.2)
 ## 14. CHANGE LOG
 
 ```
+v2.2 (2026-05-03 Session 5 - FAMILY INPUT & ASSESSMENT REVIEW COMPLETE)
+  - Family Input Module: Collects family member observations with Tailwind styling
+  - Family Submit API: Auto-generates tokens (UUID), validates relationships
+  - Assessment Review Page: Displays comprehensive summary, fetches DB data
+  - Assessment GET API: Fetches assessment data for review page
+  - Complete Assessment Flow: asrs → history → impact → comorbidity → family → review → results
+  - Proper navigation routing fixed (comorbidity now routes to family, not directly to review)
+  - All 48 tests passing (100% success rate)
+  - TypeScript strict mode clean, ESLint clean
+  - Two PRs created for code review:
+    - PR #4: Session 4 interview API auth & progress tracking
+    - PR #5: Session 5 family input & assessment review modules
+  - Ready for code review tool execution (CodeRabbit, Snyk, Vercel)
+
 v2.1 (2026-05-03 Session 4 - DEPLOYMENT BLOCKED)
   - Vercel pnpm deployment BLOCKER identified (20+ failed attempts)
   - Root cause: Node version mismatch (local 22 vs Vercel 24) + pnpm environment drift
