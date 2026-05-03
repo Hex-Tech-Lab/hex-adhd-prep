@@ -12,7 +12,7 @@
     "build": "cd apps/web && pnpm build",
     "test": "cd apps/web && jest",
     "test:coverage": "cd apps/web && jest --coverage",
-    "type-check": "tsc --noEmit",
+    "type-check": "cd apps/web && tsc --noEmit",
     "lint": "eslint ."
   },
   "devDependencies": {
