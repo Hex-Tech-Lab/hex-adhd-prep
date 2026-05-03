@@ -22,8 +22,10 @@ Sentry.init({
       maskAllText: true,
       blockAllMedia: true,
     }),
+    Sentry.httpIntegration(),
+    Sentry.nativeNodeFetchIntegration(),
   ],
 
   // Performance monitoring
-  enabled: true, // Enable for testing, set to process.env.NODE_ENV === 'production' for production
+  enabled: process.env.NODE_ENV === 'production',
 });

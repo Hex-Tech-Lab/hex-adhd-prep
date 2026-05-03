@@ -1,61 +1,42 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { detectFollowUpNeeded, getAnthropicClient } from '@/lib/claude/client';
-import { createQualityFeedback } from '@/lib/response-quality';
-import { getFallbackQuestionsForDomain } from '@/lib/claude/prompts';
+import { detectFollowUpNeeded } from '@/lib/claude/client';
 
 export async function POST(request: NextRequest) {
   try {
-    // Bearer token authentication check
+    // Basic authentication check - in production, this would use proper auth tokens
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
-    const token = authHeader.slice(7).trim();
-    if (!token) {
-      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
-    }
 
     const body = await request.json();
-    const { assessmentId, questionId, response, questionText, section } = body;
+    const { assessmentId, questionId, response, questionText } = body;
 
     if (!assessmentId || !questionId || !response) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
     const hasSupabase = !!(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
-    const hasClaude = getAnthropicClient() !== null;
-
-    let followUpResult: { needsFollowUp: boolean; followUpQuestion?: string | null } = { needsFollowUp: false };
-
-    if (hasClaude && hasSupabase) {
-      try {
-        followUpResult = await detectFollowUpNeeded(questionText || 'General interview question', response);
-      } catch (error) {
-        console.warn('Follow-up detection failed, falling back to heuristic:', error);
-      }
-    }
-
-    if (!hasClaude || !followUpResult.needsFollowUp) {
-      const heuristicFeedback = createQualityFeedback(questionId, response);
-      if (heuristicFeedback.needs_followup && !hasClaude) {
-        followUpResult = {
-          needsFollowUp: true,
-          followUpQuestion: getFallbackQuestionsForDomain(section || 'attention')[0],
-        };
-      }
-    }
 
     if (!hasSupabase) {
       return NextResponse.json({
         success: true,
         note: 'Demo mode - data not persisted',
-        data: { questionId, response },
-        followUpQuestion: followUpResult.followUpQuestion || null,
+        data: { questionId, response }
       });
     }
 
-    const { updateAssessment, insertInterviewResponse } = await import('@/lib/supabase-server');
+    const { updateAssessment, insertInterviewResponse, getInterviewResponseCount } = await import('@/lib/supabase-server');
 
+    // Check if follow-up is needed using Claude
+    let followUpResult: { needsFollowUp: boolean; followUpQuestion?: string | null } = { needsFollowUp: false };
+    try {
+      followUpResult = await detectFollowUpNeeded(questionText || 'General interview question', response);
+    } catch (error) {
+      console.warn('Follow-up detection failed, continuing without:', error);
+    }
+
+    // Save the response
     await insertInterviewResponse({
       assessment_id: assessmentId,
       question_id: questionId,
@@ -64,15 +45,23 @@ export async function POST(request: NextRequest) {
       ai_follow_up_question: followUpResult.followUpQuestion || null,
     });
 
+    // Update assessment progress - increment progress based on questions answered
+    // For now, we'll track progress as a percentage based on expected total questions
+    // In a real implementation, this would be more sophisticated
+    const expectedTotalQuestions = 30; // Total questions in interview
+    const currentProgress = await getInterviewResponseCount(assessmentId);
+    const newProgress = Math.min(100, Math.round(((currentProgress + 1) / expectedTotalQuestions) * 100));
+
     const assessment = await updateAssessment(assessmentId, {
-      current_section: 'interview',
+      current_section: newProgress >= 100 ? 'family' : 'interview',
       last_activity_at: new Date().toISOString(),
+      interview_progress_percent: newProgress,
     });
 
     return NextResponse.json({
       success: true,
       assessment,
-      followUpQuestion: followUpResult.followUpQuestion || null,
+      followUpQuestion: followUpResult.followUpQuestion || null
     });
   } catch (err) {
     console.error('Interview save error:', err);
