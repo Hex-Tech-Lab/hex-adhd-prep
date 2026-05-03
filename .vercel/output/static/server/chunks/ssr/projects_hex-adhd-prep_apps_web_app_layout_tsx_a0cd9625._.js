@@ -1,3 +1,0 @@
-module.exports=[19388,a=>{"use strict";var b=a.i(36387);function c({children:a}){return(0,b.jsx)("html",{lang:"en",suppressHydrationWarning:!0,children:(0,b.jsx)("body",{className:"bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-50 transition-colors",children:a})})}a.s(["default",()=>c,"metadata",0,{title:"ADHD-Prep | Assessment & Preparation Tool",description:"Comprehensive ADHD assessment platform to prepare for diagnostic interviews",viewport:"width=device-width, initial-scale=1",robots:"index, follow"}])}];
-
-//# sourceMappingURL=projects_hex-adhd-prep_apps_web_app_layout_tsx_a0cd9625._.js.map
