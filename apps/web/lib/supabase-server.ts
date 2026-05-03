@@ -90,3 +90,21 @@ export async function updateAssessment(assessmentId: string, updates: Record<str
   if (error) throw error;
   return data;
 }
+
+export async function getClinicians(filters?: { city?: string; specialty?: string }) {
+  const supabase = getSupabase();
+  let query = supabase.from('clinicians').select('*');
+
+  if (filters?.city) {
+    query = query.ilike('city', `%${filters.city}%`);
+  }
+
+  if (filters?.specialty) {
+    query = query.ilike('specialty', `%${filters.specialty}%`);
+  }
+
+  const { data, error } = await query;
+
+  if (error) throw error;
+  return data;
+}
