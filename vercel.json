@@ -3,5 +3,9 @@
   "installCommand": "pnpm install --frozen-lockfile",
   "outputDirectory": "apps/web/.next",
   "devCommand": "pnpm dev",
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "env": {
+    "PNPM_HOME": "/pnpm"
+  },
+  "crons": []
 }
