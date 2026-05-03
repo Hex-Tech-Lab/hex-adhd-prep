@@ -108,3 +108,21 @@ export async function getClinicians(filters?: { city?: string; specialty?: strin
   if (error) throw error;
   return data;
 }
+
+export async function insertInterviewResponse(response: {
+  assessment_id: string;
+  question_id: string;
+  response_text: string;
+  ai_flagged_vague?: boolean;
+  ai_follow_up_question?: string | null;
+}) {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('interview_responses')
+    .insert([response])
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}

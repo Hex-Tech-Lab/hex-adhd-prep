@@ -25,14 +25,15 @@ export function useAssessmentId() {
 
 export function useAssessmentProgress(currentStep: AssessmentStep) {
   const steps: Record<AssessmentStep, { number: number; total: number; label: string }> = {
-    start: { number: 0, total: 5, label: 'Start' },
-    asrs: { number: 1, total: 5, label: 'Screening' },
-    history: { number: 2, total: 5, label: 'History' },
-    impact: { number: 3, total: 5, label: 'Impact' },
-    comorbidity: { number: 4, total: 5, label: 'Comorbidity' },
-    family: { number: 5, total: 5, label: 'Family' },
-    review: { number: 5, total: 5, label: 'Review' },
-    complete: { number: 5, total: 5, label: 'Complete' },
+    start: { number: 0, total: 6, label: 'Start' },
+    asrs: { number: 1, total: 6, label: 'Screening' },
+    history: { number: 2, total: 6, label: 'History' },
+    impact: { number: 3, total: 6, label: 'Impact' },
+    comorbidity: { number: 4, total: 6, label: 'Comorbidity' },
+    interview: { number: 5, total: 6, label: 'Interview' },
+    family: { number: 6, total: 6, label: 'Family' },
+    review: { number: 6, total: 6, label: 'Review' },
+    complete: { number: 6, total: 6, label: 'Complete' },
   };
 
   return steps[currentStep] || steps.start;
