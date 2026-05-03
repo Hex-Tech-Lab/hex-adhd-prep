@@ -1,4 +1,7 @@
-import { Suspense } from 'react';
+'use client';
+
+import { Suspense, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { FormSection, TextArea, SubmitButton } from '@/lib/components/ui/FormComponents';
 import { Input } from '@/lib/components/ui/Input';
 import { ErrorDisplay } from '@/lib/components/ui/ErrorDisplay';
@@ -12,9 +15,6 @@ const RELATIONSHIPS = [
 ];
 
 function FamilySubmitContent() {
-  'use client';
-  const { useState } = require('react');
-  const { useRouter, useSearchParams } = require('next/navigation');
 
   const [familyMemberName, setFamilyMemberName] = useState('');
   const [relationship, setRelationship] = useState('');

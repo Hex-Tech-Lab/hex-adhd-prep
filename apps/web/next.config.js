@@ -2,9 +2,7 @@ const { withSentryConfig } = require('@sentry/nextjs');
 
 const nextConfig = {
   reactStrictMode: true,
-  turbopack: {
-    root: '/home/kellyb_dev/projects/hex-adhd-prep',
-  },
+  // Remove turbopack root - let Vercel/Next.js auto-detect
 };
 
 module.exports = withSentryConfig(nextConfig, {

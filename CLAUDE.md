@@ -1,6 +1,6 @@
 # CLAUDE.MD — ADHD DIAGNOSTIC SAAS MASTER CONTROL DOCUMENT
 **Version:** 2.0
-**Last Updated:** 2026-05-03
+**Last Updated:** 2026-05-04
 **Owner:** K. (CCW — Chief Cloud Architect)
 **Audience:** Any Claude/LLM agent taking on development work
 **Status:** MVP Phase 0-1 COMPLETE - Production Ready
@@ -65,14 +65,14 @@ A **low-cost, AI-guided DIVA-style pre-assessment SaaS** that helps adults prepa
 
 ```
 Frontend:
-  - Next.js 15 (App Router, SSR)
+  - Next.js 16.2.4 (App Router, SSR)
   - Tailwind CSS (no Tailwind Plus, no Material UI)
   - shadcn/ui (pre-built components only)
   - TypeScript (strict mode)
-  - React 18+
+  - React 19.2.0
 
 Backend:
-  - Node.js 20+ (serverless on Vercel)
+  - Node.js 24 (serverless on Vercel)
   - Next.js API Routes (no Express.js)
   - Anthropic Claude API (Sonnet 4 for interviews, Opus 4.5 for Council v3.2)
 
@@ -85,6 +85,7 @@ Deployment:
   - Vercel (frontend + backend)
   - GitHub (single source of truth)
   - pnpm (package manager, locked versions)
+  - .nvmrc (Node version pinning)
 
 CI/CD:
   - GitHub Actions (test, lint, security, deploy)
@@ -756,6 +757,14 @@ All Claude integration in **02-TECHNICAL-ARCHITECTURE.md** (section 3.2)
 ## 14. CHANGE LOG
 
 ```
+v2.3 (2026-05-04 - TECH STACK UPDATE)
+  - Node.js updated from 20+ to 24 globally with .nvmrc pinning
+  - Next.js updated from 15 to 16.2.4 with patch updates
+  - React updated from 18+ to 19.2.0 with patch updates
+  - pnpm-lock.yaml updated and committed
+  - Build and tests verified (98 tests passing)
+  - .nvmrc added to frozen deployment files
+
 v2.2 (2026-05-03 Session 5 - FAMILY INPUT & ASSESSMENT REVIEW COMPLETE)
   - Family Input Module: Collects family member observations with Tailwind styling
   - Family Submit API: Auto-generates tokens (UUID), validates relationships
