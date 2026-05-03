@@ -105,6 +105,29 @@ Analyze if this response needs a follow-up question:`;
 
     try {
       const result = JSON.parse(content);
+
+      // Validate the result structure
+      if (typeof result !== 'object' || result === null) {
+        console.error('Claude response is not a valid object');
+        return { needsFollowUp: false };
+      }
+
+      if (typeof result.needsFollowUp !== 'boolean') {
+        console.error('Claude response missing valid needsFollowUp boolean');
+        return { needsFollowUp: false };
+      }
+
+      if (result.needsFollowUp && typeof result.followUpQuestion !== 'string') {
+        console.error('Claude response has needsFollowUp=true but missing followUpQuestion string');
+        return { needsFollowUp: false };
+      }
+
+      // Validate follow-up question length if present
+      if (result.followUpQuestion && result.followUpQuestion.length > 100) {
+        console.warn('Claude follow-up question too long, truncating');
+        result.followUpQuestion = result.followUpQuestion.substring(0, 100);
+      }
+
       return result;
     } catch (parseError) {
       console.error('Failed to parse Claude response:', parseError);
