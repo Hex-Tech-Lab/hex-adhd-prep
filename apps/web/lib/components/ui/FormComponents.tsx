@@ -1,5 +1,10 @@
-// src/components/ui/FormSection.tsx
 import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input as ShadcnInput } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup as ShadcnRadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 
 interface FormSectionProps {
   title: string;
@@ -9,14 +14,19 @@ interface FormSectionProps {
 
 export function FormSection({ title, children, className = '' }: FormSectionProps) {
   return (
-    <div className={`mb-8 pb-6 border-b border-gray-200 ${className}`}>
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">{title}</h3>
-      {children}
-    </div>
+    <Card className={className}>
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {children}
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
-// src/components/ui/Input.tsx
 interface InputProps {
   label: string;
   value: string;
@@ -36,25 +46,25 @@ export function Input({
   type = 'text',
   className = '',
 }: InputProps) {
+  const inputId = label.toLowerCase().replace(/\s+/g, '-');
   return (
     <div className={`space-y-2 ${className}`}>
-      <label className="block text-sm font-medium text-gray-700">
+      <Label htmlFor={inputId}>
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
-      </label>
-      <input
+      </Label>
+      <ShadcnInput
+        id={inputId}
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         required={required}
-        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
       />
     </div>
   );
 }
 
-// src/components/ui/TextArea.tsx
 interface TextAreaProps {
   label: string;
   value: string;
@@ -74,25 +84,25 @@ export function TextArea({
   rows = 4,
   className = '',
 }: TextAreaProps) {
+  const inputId = label.toLowerCase().replace(/\s+/g, '-');
   return (
     <div className={`space-y-2 ${className}`}>
-      <label className="block text-sm font-medium text-gray-700">
+      <Label htmlFor={inputId}>
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
-      </label>
-      <textarea
+      </Label>
+      <Textarea
+        id={inputId}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         required={required}
         rows={rows}
-        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
       />
     </div>
   );
 }
 
-// src/components/ui/RadioGroup.tsx
 interface RadioOption {
   value: string;
   label: string;
@@ -115,32 +125,25 @@ export function RadioGroup({
   required = false,
   className = '',
 }: RadioGroupProps) {
+  const groupId = label.toLowerCase().replace(/\s+/g, '-');
   return (
     <div className={`space-y-3 ${className}`}>
-      <label className="block text-sm font-medium text-gray-700">
+      <Label>
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
-      </label>
-      <div className="space-y-2">
+      </Label>
+      <ShadcnRadioGroup value={value} onValueChange={onChange}>
         {options.map((option) => (
-          <label key={option.value} className="flex items-center cursor-pointer">
-            <input
-              type="radio"
-              value={option.value}
-              checked={value === option.value}
-              onChange={(e) => onChange(e.target.value)}
-              required={required}
-              className="mr-3 text-blue-600 focus:ring-blue-500"
-            />
-            <span className="text-gray-900">{option.label}</span>
-          </label>
+          <div key={option.value} className="flex items-center space-x-2">
+            <RadioGroupItem value={option.value} id={`${groupId}-${option.value}`} />
+            <Label htmlFor={`${groupId}-${option.value}`}>{option.label}</Label>
+          </div>
         ))}
-      </div>
+      </ShadcnRadioGroup>
     </div>
   );
 }
 
-// src/components/ui/SubmitButton.tsx
 interface SubmitButtonProps {
   children: React.ReactNode;
   disabled?: boolean;
@@ -155,12 +158,12 @@ export function SubmitButton({
   className = '',
 }: SubmitButtonProps) {
   return (
-    <button
+    <Button
       type="submit"
       disabled={disabled || loading}
-      className={`w-full px-6 py-3 bg-blue-600 text-white font-medium rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors ${className}`}
+      className={className}
     >
       {loading ? 'Submitting...' : children}
-    </button>
+    </Button>
   );
 }
