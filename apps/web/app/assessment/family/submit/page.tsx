@@ -1,6 +1,4 @@
-'use client';
-import { useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 import { FormSection, TextArea, SubmitButton } from '@/lib/components/ui/FormComponents';
 import { Input } from '@/lib/components/ui/Input';
 import { ErrorDisplay } from '@/lib/components/ui/ErrorDisplay';
@@ -13,7 +11,11 @@ const RELATIONSHIPS = [
   { value: 'other', label: 'Other' },
 ];
 
-export default function FamilySubmitPage() {
+function FamilySubmitContent() {
+  'use client';
+  const { useState } = require('react');
+  const { useRouter, useSearchParams } = require('next/navigation');
+
   const [familyMemberName, setFamilyMemberName] = useState('');
   const [relationship, setRelationship] = useState('');
   const [observations, setObservations] = useState('');
@@ -116,5 +118,13 @@ export default function FamilySubmitPage() {
         </SubmitButton>
       </form>
     </div>
+  );
+}
+
+export default function FamilySubmitPage() {
+  return (
+    <Suspense fallback={<div className="max-w-2xl mx-auto px-4 py-8">Loading...</div>}>
+      <FamilySubmitContent />
+    </Suspense>
   );
 }
