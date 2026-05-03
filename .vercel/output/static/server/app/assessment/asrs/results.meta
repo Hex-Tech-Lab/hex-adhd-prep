@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/assessment/layout,_N_T_/assessment/asrs/layout,_N_T_/assessment/asrs/results/layout,_N_T_/assessment/asrs/results/page,_N_T_/assessment/asrs/results"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/assessment/asrs/results/__PAGE__",
+    "/assessment/asrs/results",
+    "/assessment/asrs",
+    "/assessment",
+    "/_index"
+  ]
+}

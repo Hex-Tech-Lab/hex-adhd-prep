@@ -1,0 +1,23 @@
+{
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/assessment/asrs/route": "app/api/assessment/asrs/route.js",
+  "/api/assessment/comorbidity/route": "app/api/assessment/comorbidity/route.js",
+  "/api/assessment/complete/route": "app/api/assessment/complete/route.js",
+  "/api/assessment/family/route": "app/api/assessment/family/route.js",
+  "/api/assessment/feedback/route": "app/api/assessment/feedback/route.js",
+  "/api/assessment/history/route": "app/api/assessment/history/route.js",
+  "/api/assessment/impact/route": "app/api/assessment/impact/route.js",
+  "/api/auth/login/route": "app/api/auth/login/route.js",
+  "/api/auth/signup/route": "app/api/auth/signup/route.js",
+  "/api/health/route": "app/api/health/route.js",
+  "/assessment/asrs/page": "app/assessment/asrs/page.js",
+  "/assessment/asrs/results/page": "app/assessment/asrs/results/page.js",
+  "/assessment/comorbidity/page": "app/assessment/comorbidity/page.js",
+  "/assessment/family/page": "app/assessment/family/page.js",
+  "/assessment/history/page": "app/assessment/history/page.js",
+  "/assessment/impact/page": "app/assessment/impact/page.js",
+  "/assessment/review/page": "app/assessment/review/page.js",
+  "/assessment/start/page": "app/assessment/start/page.js",
+  "/page": "app/page.js"
+}

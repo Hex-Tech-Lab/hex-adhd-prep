@@ -1,0 +1,23 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/api/assessment/asrs/route": "/api/assessment/asrs",
+  "/api/assessment/comorbidity/route": "/api/assessment/comorbidity",
+  "/api/assessment/complete/route": "/api/assessment/complete",
+  "/api/assessment/family/route": "/api/assessment/family",
+  "/api/assessment/feedback/route": "/api/assessment/feedback",
+  "/api/assessment/history/route": "/api/assessment/history",
+  "/api/assessment/impact/route": "/api/assessment/impact",
+  "/api/auth/login/route": "/api/auth/login",
+  "/api/auth/signup/route": "/api/auth/signup",
+  "/api/health/route": "/api/health",
+  "/assessment/asrs/page": "/assessment/asrs",
+  "/assessment/asrs/results/page": "/assessment/asrs/results",
+  "/assessment/comorbidity/page": "/assessment/comorbidity",
+  "/assessment/family/page": "/assessment/family",
+  "/assessment/history/page": "/assessment/history",
+  "/assessment/impact/page": "/assessment/impact",
+  "/assessment/review/page": "/assessment/review",
+  "/assessment/start/page": "/assessment/start",
+  "/page": "/"
+}

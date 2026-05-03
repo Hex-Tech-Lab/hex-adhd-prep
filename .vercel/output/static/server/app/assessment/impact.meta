@@ -1,0 +1,15 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/assessment/layout,_N_T_/assessment/impact/layout,_N_T_/assessment/impact/page,_N_T_/assessment/impact"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/assessment/impact/__PAGE__",
+    "/assessment/impact",
+    "/assessment",
+    "/_index"
+  ]
+}
