@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import * as Sentry from '@sentry/nextjs';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Trigger a test error for Sentry to capture
     throw new Error('Sentry test error - triggered from API endpoint');

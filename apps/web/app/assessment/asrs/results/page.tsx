@@ -8,7 +8,6 @@ function ResultsContent() {
   const score = parseFloat(params.get('score') || '0');
   const risk = (params.get('risk') || 'unknown') as 'low' | 'moderate' | 'high' | string;
 
-  const riskColors: Record<string, string> = { low: 'green', moderate: 'orange', high: 'red' };
   const explanation: Record<string, string> = {
     low: 'Your responses suggest minimal ADHD symptoms. Only a clinician can diagnose.',
     moderate: 'Your responses suggest moderate ADHD symptoms. Consider clinical evaluation.',
@@ -16,40 +15,43 @@ function ResultsContent() {
   };
 
   return (
-    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '2rem' }}>
-      <h1>Your ASRS Results</h1>
-      <div style={{ background: '#f5f5f5', padding: '1rem', borderRadius: '4px', marginBottom: '2rem' }}>
-        <p><strong>Overall Score: {score.toFixed(2)}/4</strong></p>
-        <p><strong>Risk Level: </strong><span style={{ color: riskColors[risk] || 'black' }}>{risk}</span></p>
-        <p>{explanation[risk] || ''}</p>
+    <div className="max-w-2xl mx-auto px-4 py-8">
+      <h1 className="text-4xl font-bold mb-8">Your ASRS Results</h1>
+      <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8">
+        <p className="text-lg font-semibold mb-4">Overall Score: <span className="text-blue-600">{score.toFixed(2)}/4</span></p>
+        <p className="mb-4">
+          <span className="font-semibold">Risk Level: </span>
+          <span className={`font-bold ${
+            risk === 'low' ? 'text-green-600' :
+            risk === 'moderate' ? 'text-yellow-600' :
+            risk === 'high' ? 'text-red-600' :
+            'text-gray-600'
+          }`}>
+            {risk.charAt(0).toUpperCase() + risk.slice(1)}
+          </span>
+        </p>
+        <p className="text-gray-700 leading-relaxed">{explanation[risk] || ''}</p>
       </div>
-      <p style={{ textAlign: 'center', fontSize: '0.9rem', color: '#666', marginBottom: '2rem' }}>
+
+      <p className="text-center text-sm text-gray-600 mb-8">
         This tool prepares you for clinical evaluation. Only licensed clinicians can diagnose ADHD.
       </p>
 
-      <button
-        onClick={() => router.push('/assessment/history')}
-        style={{
-          width: '100%',
-          padding: '0.75rem',
-          background: '#0066cc',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer',
-          fontSize: '1rem',
-          marginBottom: '1rem',
-        }}
-      >
-        Continue Assessment
-      </button>
+      <div className="space-y-3">
+        <button
+          onClick={() => router.push('/assessment/history')}
+          className="w-full py-3 px-4 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+        >
+          Continue Assessment
+        </button>
 
-      <button
-        onClick={() => router.push('/clinicians')}
-        className="w-full py-3 bg-green-600 text-white rounded-md cursor-pointer text-base"
-      >
-        Find a Clinician
-      </button>
+        <button
+          onClick={() => router.push('/clinicians')}
+          className="w-full py-3 px-4 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors"
+        >
+          Find a Clinician
+        </button>
+      </div>
     </div>
   );
 }
