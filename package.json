@@ -3,10 +3,10 @@
   "version": "0.0.1",
   "description": "ADHD diagnostic SaaS",
   "private": true,
-  "packageManager": "pnpm@10.33.0",
+  "packageManager": "pnpm@9.12.3",
   "engines": {
-    "node": "22.x",
-    "pnpm": "10.33.0"
+    "node": ">=20.0.0",
+    "pnpm": "9.12.3"
   },
   "scripts": {
     "dev": "cd apps/web && pnpm dev",
