@@ -10,7 +10,7 @@
   },
   "scripts": {
     "dev": "cd apps/web && pnpm dev",
-    "build": "cd apps/web && npm run build",
+    "build": "cd apps/web && pnpm build",
     "test": "jest",
     "lint": "eslint . --ext .ts,.tsx"
   },
