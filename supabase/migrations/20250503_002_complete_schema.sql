@@ -268,6 +268,57 @@ VALUES (
 ON CONFLICT (email) DO NOTHING;
 
 -- =============================================================================
+-- Clinicians Table
+-- =============================================================================
+CREATE TABLE IF NOT EXISTS public.clinicians (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name VARCHAR(255) NOT NULL,
+  specialty VARCHAR(100),
+  city VARCHAR(100),
+  state VARCHAR(2),
+  phone VARCHAR(20),
+  email VARCHAR(255),
+  telehealth BOOLEAN DEFAULT TRUE,
+  rating NUMERIC(3,1),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_clinicians_city ON public.clinicians(city);
+CREATE INDEX IF NOT EXISTS idx_clinicians_state ON public.clinicians(state);
+CREATE INDEX IF NOT EXISTS idx_clinicians_specialty ON public.clinicians(specialty);
+
+ALTER TABLE public.clinicians ENABLE ROW LEVEL SECURITY;
+
+-- Allow everyone to read clinicians (public directory)
+CREATE POLICY IF NOT EXISTS "Anyone can read clinicians"
+  ON public.clinicians FOR SELECT
+  USING (true);
+
+-- Seed 20 sample clinicians
+INSERT INTO public.clinicians (name, specialty, city, state, phone, email, telehealth, rating) VALUES
+('Dr. Sarah Mitchell', 'ADHD Specialist', 'San Francisco', 'CA', '415-555-0100', 'sarah@adhd.clinic', true, 4.8),
+('Dr. James Chen', 'Psychiatry', 'New York', 'NY', '212-555-0200', 'james@psych.care', true, 4.7),
+('Dr. Emily Rodriguez', 'Clinical Psychologist', 'Los Angeles', 'CA', '323-555-0300', 'emily@mind.health', true, 4.9),
+('Dr. Michael Thompson', 'Neurologist', 'Chicago', 'IL', '312-555-0400', 'michael@neuro.clinic', false, 4.6),
+('Dr. Lisa Park', 'Child Psychiatrist', 'Seattle', 'WA', '206-555-0500', 'lisa@child.mind', true, 4.8),
+('Dr. David Kim', 'Behavioral Therapist', 'Austin', 'TX', '512-555-0600', 'david@behavior.therapy', true, 4.7),
+('Dr. Rachel Green', 'Adult ADHD Specialist', 'Boston', 'MA', '617-555-0700', 'rachel@adhd.boston', true, 4.9),
+('Dr. Robert Johnson', 'Psychiatrist', 'Denver', 'CO', '303-555-0800', 'robert@psych.denver', false, 4.5),
+('Dr. Jennifer Lee', 'Clinical Psychologist', 'Miami', 'FL', '305-555-0900', 'jennifer@psych.miami', true, 4.8),
+('Dr. Andrew Wilson', 'ADHD Coach', 'Phoenix', 'AZ', '602-555-1000', 'andrew@adhdcoach.az', true, 4.6),
+('Dr. Maria Garcia', 'Psychiatrist', 'Dallas', 'TX', '214-555-1100', 'maria@psych.dallas', true, 4.7),
+('Dr. Thomas Brown', 'Neurologist', 'Philadelphia', 'PA', '215-555-1200', 'thomas@neuro.phila', false, 4.8),
+('Dr. Amanda White', 'Behavioral Specialist', 'San Diego', 'CA', '619-555-1300', 'amanda@behavior.sd', true, 4.9),
+('Dr. Christopher Davis', 'Clinical Psychologist', 'Nashville', 'TN', '615-555-1400', 'christopher@psych.nash', true, 4.7),
+('Dr. Jessica Martinez', 'ADHD Specialist', 'Portland', 'OR', '503-555-1500', 'jessica@adhd.portland', true, 4.8),
+('Dr. Daniel Taylor', 'Psychiatrist', 'Las Vegas', 'NV', '702-555-1600', 'daniel@psych.vegas', false, 4.6),
+('Dr. Nicole Anderson', 'Child Psychologist', 'Salt Lake City', 'UT', '801-555-1700', 'nicole@child.slc', true, 4.7),
+('Dr. Kevin Thomas', 'Neurology', 'Minneapolis', 'MN', '612-555-1800', 'kevin@neuro.minn', true, 4.8),
+('Dr. Samantha Jackson', 'Behavioral Therapist', 'Atlanta', 'GA', '404-555-1900', 'samantha@behavior.atl', true, 4.9),
+('Dr. Matthew Harris', 'Psychiatrist', 'Orlando', 'FL', '407-555-2000', 'matthew@psych.orlando', false, 4.7)
+ON CONFLICT DO NOTHING;
+
+-- =============================================================================
 -- Migration Complete
 -- =============================================================================
 -- Run these commands to verify:

@@ -21,6 +21,12 @@ export interface ComorbidityFormData extends AssessmentFormData {
   notes: string;
 }
 
+export interface InterviewFormData extends AssessmentFormData {
+  questionId: string;
+  response: string;
+  questionText?: string;
+}
+
 export interface FamilyFormData extends AssessmentFormData {
   familyMemberName: string;
   relationship: string;
@@ -40,6 +46,7 @@ export type AssessmentStep =
   | 'history'
   | 'impact'
   | 'comorbidity'
+  | 'interview'
   | 'family'
   | 'review'
   | 'complete';

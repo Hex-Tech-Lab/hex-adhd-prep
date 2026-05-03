@@ -12,8 +12,10 @@ const customJestConfig = {
   },
   testMatch: [
     '**/__tests__/**/*.(test|spec).(ts|tsx)',
-    '**/*.(test|spec).(ts|tsx)',
+    '!**/e2e/**',
+    '!**/node_modules/**',
   ],
+  testPathIgnorePatterns: ['/node_modules/', '/e2e/'],
   collectCoverageFrom: [
     'app/**/*.{js,jsx,ts,tsx}',
     'components/**/*.{js,jsx,ts,tsx}',
