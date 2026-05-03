@@ -4,11 +4,13 @@
 
 import { POST } from '../assessment/interview/save-response/route';
 import { NextRequest } from 'next/server';
+import { TOTAL_INTERVIEW_QUESTIONS } from '@/lib/constants';
 
 // Mock the supabase-server module
 jest.mock('@/lib/supabase-server', () => ({
   updateAssessment: jest.fn(),
   insertInterviewResponse: jest.fn(),
+  getInterviewResponseCount: jest.fn(),
 }));
 
 // Mock the claude client
@@ -28,7 +30,7 @@ jest.mock('@/lib/claude/prompts', () => ({
 }));
 
 // Import mocked modules
-import { updateAssessment, insertInterviewResponse } from '@/lib/supabase-server';
+import { updateAssessment, insertInterviewResponse, getInterviewResponseCount } from '@/lib/supabase-server';
 import { detectFollowUpNeeded, getAnthropicClient } from '@/lib/claude/client';
 
 const validToken = 'test-secret-api-key-123';
@@ -64,6 +66,8 @@ describe('Interview Save-Response API Route', () => {
     process.env = { ...originalEnv };
     process.env.NEXT_PUBLIC_SUPABASE_URL = '';
     process.env.SUPABASE_SERVICE_ROLE_KEY = '';
+    // Default mock: assume 0 prior responses
+    (getInterviewResponseCount as jest.Mock).mockResolvedValue(0);
   });
 
   afterAll(() => {
@@ -625,6 +629,49 @@ describe('Interview Save-Response API Route', () => {
 
       expect(data.error).toBe('Internal error');
       expect(JSON.stringify(data)).not.toContain('db.example.com');
+    });
+
+    it('should calculate interview progress correctly for first response', async () => {
+      // 0 prior responses
+      (getInterviewResponseCount as jest.Mock).mockResolvedValue(0);
+      (insertInterviewResponse as jest.Mock).mockResolvedValue({ id: 'resp-1' });
+      (updateAssessment as jest.Mock).mockResolvedValue({ id: 'test-id' });
+
+      const request = createRequest(defaultValidBody, {
+        Authorization: validAuthHeader,
+      });
+      await POST(request);
+
+      const expectedProgress = Math.min(100, Math.round(((0 + 1) / TOTAL_INTERVIEW_QUESTIONS) * 100));
+      expect(updateAssessment).toHaveBeenCalledWith(
+        'test-assessment-id',
+        expect.objectContaining({ interview_progress_percent: expectedProgress })
+      );
+    });
+
+    it('should reach 100% progress at the final response and suppress follow-up', async () => {
+      const previousCount = TOTAL_INTERVIEW_QUESTIONS - 1; // 29
+      (getInterviewResponseCount as jest.Mock).mockResolvedValue(previousCount);
+      (insertInterviewResponse as jest.Mock).mockResolvedValue({ id: 'resp-30' });
+      (updateAssessment as jest.Mock).mockResolvedValue({ id: 'test-id' });
+      (detectFollowUpNeeded as jest.Mock).mockResolvedValue({
+        needsFollowUp: true,
+        followUpQuestion: 'Should not be returned',
+      });
+
+      const request = createRequest(defaultValidBody, {
+        Authorization: validAuthHeader,
+      });
+      const response = await POST(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(updateAssessment).toHaveBeenCalledWith(
+        'test-assessment-id',
+        expect.objectContaining({ interview_progress_percent: 100 })
+      );
+      // Follow-up should be suppressed because interview is complete
+      expect(data.followUpQuestion).toBeNull();
     });
   });
 

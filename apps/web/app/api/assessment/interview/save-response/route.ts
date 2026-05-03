@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { detectFollowUpNeeded } from '@/lib/claude/client';
-import { updateAssessment, insertInterviewResponse } from '@/lib/supabase-server';
+import { updateAssessment, insertInterviewResponse, getInterviewResponseCount } from '@/lib/supabase-server';
+import { TOTAL_INTERVIEW_QUESTIONS } from '@/lib/constants';
 
 export async function POST(request: NextRequest) {
   try {
@@ -35,6 +36,9 @@ export async function POST(request: NextRequest) {
       console.warn('Follow-up detection failed, continuing without:', error);
     }
 
+    // Get current response count BEFORE inserting the new one
+    const previousCount = await getInterviewResponseCount(assessmentId);
+    
     // Save the response
     await insertInterviewResponse({
       assessment_id: assessmentId,
@@ -44,17 +48,24 @@ export async function POST(request: NextRequest) {
       ai_follow_up_question: followUpResult.followUpQuestion || null,
     });
 
+    // Calculate new count and progress
+    const newCount = previousCount + 1;
+    const progressPercent = Math.min(100, Math.round((newCount / TOTAL_INTERVIEW_QUESTIONS) * 100));
+
+    // If interview is complete, suppress follow-up to avoid exceeding total questions
+    const shouldReturnFollowUp = followUpResult.needsFollowUp && progressPercent < 100;
+
     // Update assessment progress
     const assessment = await updateAssessment(assessmentId, {
       current_section: 'interview',
       last_activity_at: new Date().toISOString(),
-      interview_progress_percent: 100,
+      interview_progress_percent: progressPercent,
     });
 
     return NextResponse.json({
       success: true,
       assessment,
-      followUpQuestion: followUpResult.followUpQuestion || null
+      followUpQuestion: shouldReturnFollowUp ? followUpResult.followUpQuestion || null : null,
     });
   } catch (err) {
     console.error('Interview save error:', err);

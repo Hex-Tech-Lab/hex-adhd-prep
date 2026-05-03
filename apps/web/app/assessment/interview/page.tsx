@@ -83,6 +83,12 @@ export default function InterviewPage() {
         throw new Error(result.error || 'Failed to save response');
       }
 
+      // If interview progress is 100%, transition to family section
+      if (result.assessment?.interview_progress_percent === 100) {
+        window.location.href = '/assessment/family';
+        return;
+      }
+
       if (result.followUpQuestion) {
         // Handle follow-up question - insert at currentIndex+1 for correct ordering
         const followUp: InterviewQuestion = {
