@@ -1,35 +1,50 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { hashPassword, validateEmail, generateSessionToken } from '@/lib/auth';
+import {
+  validateAndSanitizeEmail,
+  validateAndSanitizePassword,
+  validateAge,
+} from '@/lib/validation';
+import { authRateLimiter } from '@/lib/rate-limit';
 
 export async function POST(request: NextRequest) {
   try {
+    const clientIp = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
+
+    // Rate limiting
+    const limitResult = authRateLimiter(clientIp);
+    if (!limitResult.allowed) {
+      return NextResponse.json(
+        { error: 'Too many signup attempts. Please try again later.' },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': Math.ceil((limitResult.resetTime - Date.now()) / 1000).toString(),
+          },
+        }
+      );
+    }
+
     const body = await request.json();
-    const { email, password, age } = body;
+    const { email: rawEmail, password: rawPassword, age: rawAge } = body;
 
-    if (!email || !password || !age) {
-      return NextResponse.json(
-        { error: 'Missing required fields: email, password, age' },
-        { status: 400 }
-      );
-    }
+    // Validate and sanitize inputs
+    let email: string;
+    let password: string;
+    let age: number;
 
-    if (!validateEmail(email)) {
+    try {
+      email = validateAndSanitizeEmail(rawEmail);
+      password = validateAndSanitizePassword(rawPassword);
+      age = validateAge(rawAge);
+    } catch (validationError) {
       return NextResponse.json(
-        { error: 'Invalid email format' },
-        { status: 400 }
-      );
-    }
-
-    if (typeof age !== 'number' || age < 18 || age > 120) {
-      return NextResponse.json(
-        { error: 'Age must be between 18 and 120' },
-        { status: 400 }
-      );
-    }
-
-    if (password.length < 8) {
-      return NextResponse.json(
-        { error: 'Password must be at least 8 characters' },
+        {
+          error:
+            validationError instanceof Error
+              ? validationError.message
+              : 'Invalid input',
+        },
         { status: 400 }
       );
     }
