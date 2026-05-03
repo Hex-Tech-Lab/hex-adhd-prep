@@ -1,11 +1,48 @@
 'use client';
-export default function Home() {
+import { useEffect, useState } from 'react';
+
+export default function Home(): JSX.Element {
+  const [isDark, setIsDark] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsDark(document.documentElement.classList.contains('dark'));
+  }, []);
+
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white', padding: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ maxWidth: '800px', textAlign: 'center' }}>
-        <h1 style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>ADHD-Prep</h1>
-        <p style={{ fontSize: '1.2rem', marginBottom: '2rem', opacity: 0.9 }}>Comprehensive ADHD Assessment Platform</p>
-        <a href="/assessment/start" style={{ display: 'inline-block', background: 'white', color: '#667eea', padding: '1.2rem 3rem', borderRadius: '10px', fontSize: '1.2rem', fontWeight: 'bold', textDecoration: 'none' }}>Start Assessment →</a>
+    <div className="min-h-screen bg-gradient-to-br from-purple-500 via-indigo-600 to-blue-600 dark:from-slate-900 dark:via-purple-900 dark:to-slate-900 text-white px-4 py-8 flex items-center justify-center">
+      <div className="max-w-2xl mx-auto text-center space-y-8">
+        <div className="space-y-4">
+          <h1 className="text-5xl sm:text-6xl font-bold tracking-tight">ADHD-Prep</h1>
+          <p className="text-xl sm:text-2xl text-white/90">Comprehensive ADHD Assessment & Preparation</p>
+          <p className="text-base sm:text-lg text-white/75 max-w-xl mx-auto">
+            Get clinically-validated screening, prepare for your diagnostic interview, and provide crucial context for your healthcare provider—all in 45 minutes.
+          </p>
+        </div>
+
+        <div className="pt-4 space-y-4">
+          <a
+            href="/assessment/start"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-white text-purple-600 rounded-lg font-bold text-lg hover:bg-gray-50 hover:shadow-xl transition-all duration-200 transform hover:scale-105 active:scale-95"
+            aria-label="Start ADHD assessment"
+          >
+            Start Assessment
+            <span className="text-xl">→</span>
+          </a>
+          <p className="text-sm text-white/60">Takes approximately 45 minutes</p>
+        </div>
+
+        <div className="pt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+          {[
+            { label: 'Clinically Validated', icon: '✓' },
+            { label: 'Privacy Protected', icon: '🔒' },
+            { label: 'Instant Results', icon: '⚡' },
+          ].map((feature) => (
+            <div key={feature.label} className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+              <div className="text-2xl mb-2">{feature.icon}</div>
+              <p>{feature.label}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
