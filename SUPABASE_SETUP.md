@@ -13,7 +13,7 @@ Run this SQL in your Supabase SQL editor:
 ```sql
 -- Enable required extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE EXTENSION IF NOT EXISTS "pgvector";
+CREATE EXTENSION IF NOT EXISTS "vector";
 
 -- Users table
 CREATE TABLE users (
@@ -35,10 +35,19 @@ CREATE TABLE assessments (
   expires_at TIMESTAMP,
   asrs_part_a_score INTEGER,
   asrs_part_b_score INTEGER,
+  asrs_total_score INTEGER,
   asrs_risk_level VARCHAR(50),
+  asrs_completed_at TIMESTAMP,
+  history_data JSONB,
+  impact_data JSONB,
+  comorbidity_data JSONB,
+  family_input_provided BOOLEAN DEFAULT FALSE,
+  family_input_completed_at TIMESTAMP,
   interview_progress_percent INTEGER DEFAULT 0,
   current_section VARCHAR(100),
   report_pdf_url VARCHAR(500),
+  completed_at TIMESTAMP,
+  last_activity_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
