@@ -46,16 +46,7 @@ function ResultsContent() {
 
       <button
         onClick={() => router.push('/clinicians')}
-        style={{
-          width: '100%',
-          padding: '0.75rem',
-          background: '#28a745',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer',
-          fontSize: '1rem',
-        }}
+        className="w-full py-3 bg-green-600 text-white rounded-md cursor-pointer text-base"
       >
         Find a Clinician
       </button>

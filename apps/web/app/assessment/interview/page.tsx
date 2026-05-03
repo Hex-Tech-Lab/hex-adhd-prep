@@ -84,13 +84,20 @@ export default function InterviewPage() {
       }
 
       if (result.followUpQuestion) {
-        // Handle follow-up question
+        // Handle follow-up question - insert at currentIndex+1 for correct ordering
         const followUp: InterviewQuestion = {
           id: `${currentQuestion.id}-followup`,
           question: result.followUpQuestion,
           isFollowUp: true
         };
-        setQuestions(prev => [...prev, followUp]);
+        // Insert follow-up immediately after current question
+        setQuestions(prev => {
+          const newQuestions = [...prev];
+          newQuestions.splice(currentIndex + 1, 0, followUp);
+          return newQuestions;
+        });
+        // Advance to the newly inserted follow-up
+        setCurrentIndex(prevIndex => prevIndex + 1);
         setCurrentQuestion(followUp);
         setResponse('');
       } else if (currentIndex < questions.length - 1) {

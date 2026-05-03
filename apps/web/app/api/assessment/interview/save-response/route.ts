@@ -3,6 +3,12 @@ import { detectFollowUpNeeded } from '@/lib/claude/client';
 
 export async function POST(request: NextRequest) {
   try {
+    // Basic authentication check - in production, this would use proper auth tokens
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+    }
+
     const body = await request.json();
     const { assessmentId, questionId, response, questionText } = body;
 
@@ -41,9 +47,8 @@ export async function POST(request: NextRequest) {
 
     // Update assessment progress
     const assessment = await updateAssessment(assessmentId, {
-      current_section: 'family',
+      current_section: 'interview',
       last_activity_at: new Date().toISOString(),
-      interview_progress_percent: 100, // Mark interview as complete
     });
 
     return NextResponse.json({

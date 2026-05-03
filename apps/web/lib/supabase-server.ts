@@ -157,3 +157,14 @@ export async function getAssessmentByToken(token: string) {
   if (error) return null;
   return data;
 }
+
+export async function getInterviewResponseCount(assessmentId: string): Promise<number> {
+  const supabase = getSupabase();
+  const { count, error } = await supabase
+    .from('interview_responses')
+    .select('*', { count: 'exact', head: true })
+    .eq('assessment_id', assessmentId);
+
+  if (error) throw error;
+  return count || 0;
+}
