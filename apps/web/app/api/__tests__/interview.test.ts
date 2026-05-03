@@ -479,6 +479,11 @@ describe('Interview Save-Response API Route', () => {
     beforeEach(() => {
       process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://test.supabase.co';
       process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-key';
+      // Default mock for detectFollowUpNeeded
+      (detectFollowUpNeeded as jest.Mock).mockResolvedValue({
+        needsFollowUp: false,
+        followUpQuestion: null,
+      });
     });
 
     afterEach(() => {

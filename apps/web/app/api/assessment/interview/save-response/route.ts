@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { detectFollowUpNeeded } from '@/lib/claude/client';
+import { updateAssessment, insertInterviewResponse } from '@/lib/supabase-server';
 
 export async function POST(request: NextRequest) {
   try {
@@ -26,8 +27,6 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    const { updateAssessment, insertInterviewResponse, getInterviewResponseCount } = await import('@/lib/supabase-server');
-
     // Check if follow-up is needed using Claude
     let followUpResult: { needsFollowUp: boolean; followUpQuestion?: string | null } = { needsFollowUp: false };
     try {
@@ -45,17 +44,11 @@ export async function POST(request: NextRequest) {
       ai_follow_up_question: followUpResult.followUpQuestion || null,
     });
 
-    // Update assessment progress - increment progress based on questions answered
-    // For now, we'll track progress as a percentage based on expected total questions
-    // In a real implementation, this would be more sophisticated
-    const expectedTotalQuestions = 30; // Total questions in interview
-    const currentProgress = await getInterviewResponseCount(assessmentId);
-    const newProgress = Math.min(100, Math.round(((currentProgress + 1) / expectedTotalQuestions) * 100));
-
+    // Update assessment progress
     const assessment = await updateAssessment(assessmentId, {
-      current_section: newProgress >= 100 ? 'family' : 'interview',
+      current_section: 'interview',
       last_activity_at: new Date().toISOString(),
-      interview_progress_percent: newProgress,
+      interview_progress_percent: 100,
     });
 
     return NextResponse.json({
