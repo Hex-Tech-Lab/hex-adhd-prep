@@ -10,8 +10,10 @@
   "scripts": {
     "dev": "cd apps/web && pnpm dev",
     "build": "cd apps/web && pnpm build",
-    "test": "jest",
-    "lint": "eslint . --ext .ts,.tsx"
+    "test": "cd apps/web && jest",
+    "test:coverage": "cd apps/web && jest --coverage",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint ."
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "8.0.1",
