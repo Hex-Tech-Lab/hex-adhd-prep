@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useCallback, useRef, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 
 const QUESTIONS = [
@@ -13,37 +13,57 @@ const QUESTIONS = [
 
 const OPTIONS = ['Never or Rarely', 'Sometimes', 'Often', 'Very Often', 'Constantly'];
 
-export default function ASRSPage() {
-  const [responses, setResponses] = useState(Array(6).fill(-1));
-  const [submitted, setSubmitted] = useState(false);
+export default function ASRSPage(): JSX.Element {
+  const [responses, setResponses] = useState<number[]>(Array(6).fill(-1));
+  const [submitted, setSubmitted] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const submitTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const handleChange = (idx, val) => {
-    const newResponses = [...responses];
-    newResponses[idx] = val;
-    setResponses(newResponses);
-  };
+  const handleChange = useCallback((idx: number, val: number): void => {
+    setResponses((prev) => {
+      const newResponses = [...prev];
+      newResponses[idx] = val;
+      return newResponses;
+    });
+  }, []);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = useCallback(async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
+    setError(null);
+
     if (responses.includes(-1)) {
-      alert('Please answer all questions');
+      setError('Please answer all questions before proceeding');
       return;
     }
+
     setSubmitted(true);
-    
+
     try {
       const res = await fetch('/api/assessment/asrs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ responses }),
+        signal: AbortSignal.timeout(10000), // 10 second timeout
       });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to submit assessment');
+      }
+
       const data = await res.json();
-      router.push(`/assessment/asrs/results?score=${data.overallScore}&risk=${data.riskLevel}`);
+      if (data.overallScore !== undefined && data.riskLevel) {
+        router.push(`/assessment/asrs/results?score=${data.overallScore}&risk=${data.riskLevel}`);
+      } else {
+        throw new Error('Invalid response from server');
+      }
     } catch (err) {
-      alert('Error submitting assessment');
+      const message = err instanceof Error ? err.message : 'An error occurred. Please try again.';
+      setError(message);
+      setSubmitted(false);
     }
-  };
+  }, [responses, router]);
 
   const progress = responses.filter(r => r !== -1).length;
 
