@@ -46,7 +46,6 @@ yarn-error.log*
 # Supabase
 .supabase/
 
-# Vercel (except prebuilt output)
-.vercel/project.json
-.vercel/README.txt
+# Vercel
+.vercel/
 .env.local
