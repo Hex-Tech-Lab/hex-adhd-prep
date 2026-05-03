@@ -1,145 +1,119 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAssessmentId, useAssessmentProgress } from '@/lib/hooks/useAssessment';
+import { useFormSubmission } from '@/lib/hooks/useFormSubmission';
+import { ProgressIndicator } from '@/lib/components/ui/ProgressIndicator';
+import { FormSection, TextArea, SubmitButton } from '@/lib/components/ui/FormComponents';
+import { Input } from '@/lib/components/ui/Input';
+import { ErrorDisplay } from '@/lib/components/ui/ErrorDisplay';
+import { FamilyFormData } from '@/lib/types/assessment';
 
-const RELATIONSHIPS = ['Parent', 'Sibling', 'Spouse/Partner', 'Close Friend', 'Other'];
-
-function getOrCreateAssessmentId(): string {
-  let id = sessionStorage.getItem('assessmentId');
-  if (!id) {
-    id = crypto.randomUUID();
-    sessionStorage.setItem('assessmentId', id);
-  }
-  return id;
-}
+const RELATIONSHIPS = [
+  { value: 'parent', label: 'Parent' },
+  { value: 'sibling', label: 'Sibling' },
+  { value: 'spouse', label: 'Spouse/Partner' },
+  { value: 'friend', label: 'Close Friend' },
+  { value: 'other', label: 'Other' },
+];
 
 export default function FamilyPage() {
   const [familyMemberName, setFamilyMemberName] = useState('');
   const [relationship, setRelationship] = useState('');
   const [observations, setObservations] = useState('');
-  const [submitted, setSubmitted] = useState(false);
-  const [assessmentId, setAssessmentId] = useState<string | null>(null);
+  const { assessmentId } = useAssessmentId();
+  const progress = useAssessmentProgress('family');
   const router = useRouter();
 
-  useEffect(() => {
-    setAssessmentId(getOrCreateAssessmentId());
-  }, []);
+  const validateForm = (data: FamilyFormData) => {
+    return !!(data.familyMemberName?.trim() && data.relationship && data.observations?.trim());
+  };
 
-  const handleSubmit = async (e) => {
+  const { submitted, error, submitForm, clearError } = useFormSubmission<FamilyFormData>(
+    '/assessment/family',
+    '/assessment/history',
+    validateForm
+  );
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!familyMemberName.trim() || !relationship || !observations.trim()) {
-      alert('Please answer all questions');
-      return;
-    }
-    setSubmitted(true);
+    if (!assessmentId) return;
 
-    try {
-      const res = await fetch('/api/assessment/family', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ assessmentId, familyMemberName, relationship, observations }),
-      });
-      if (!res.ok) throw new Error('Failed to save family input');
-      router.push('/assessment/review');
-    } catch (err) {
-      alert('Error submitting. Please try again.');
-      setSubmitted(false);
-    }
+    const formData: FamilyFormData = {
+      assessmentId,
+      familyMemberName,
+      relationship,
+      observations,
+    };
+
+    await submitForm(formData);
   };
 
   const isComplete = familyMemberName.trim() && relationship && observations.trim();
 
   return (
-    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '2rem' }}>
-      <p style={{ color: '#0066cc', fontWeight: 'bold', marginBottom: '0.5rem' }}>Step 5 of 5: Family</p>
-      <h1>Family & Friend Perspective</h1>
-      <p style={{ color: '#666', marginBottom: '2rem' }}>
-        People who know you well often notice patterns you might miss. This helps clinicians get a complete picture.
-      </p>
+    <div className="max-w-2xl mx-auto px-4 py-8">
+      <ProgressIndicator
+        current={progress.number}
+        total={progress.total}
+        label={progress.label}
+      />
 
-      <form onSubmit={handleSubmit}>
-        {/* Name */}
-        <div style={{ marginBottom: '2rem', borderBottom: '1px solid #ddd', paddingBottom: '1.5rem' }}>
-          <p style={{ fontWeight: 'bold', marginBottom: '1rem' }}>
-            Who is providing this perspective? (name)
-          </p>
-          <input
-            type="text"
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">Family & Friend Perspective</h1>
+        <p className="text-gray-600">
+          People who know you well often notice patterns you might miss. This helps clinicians get a complete picture.
+        </p>
+      </div>
+
+      <ErrorDisplay error={error} onDismiss={clearError} />
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <FormSection title="Family Member Information">
+          <Input
+            label="Who is providing this perspective?"
             value={familyMemberName}
-            onChange={(e) => setFamilyMemberName(e.target.value)}
+            onChange={setFamilyMemberName}
             placeholder="e.g., Mom, John, Sarah"
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              border: '1px solid #ccc',
-              borderRadius: '4px',
-              fontSize: '1rem',
-              boxSizing: 'border-box',
-            }}
+            required
           />
-        </div>
+        </FormSection>
 
-        {/* Relationship */}
-        <div style={{ marginBottom: '2rem', borderBottom: '1px solid #ddd', paddingBottom: '1.5rem' }}>
-          <p style={{ fontWeight: 'bold', marginBottom: '1rem' }}>
-            What is your relationship to them?
-          </p>
-          <div>
+        <FormSection title="Relationship">
+          <div className="space-y-3">
+            <p className="text-sm font-medium text-gray-700 mb-3">
+              What is your relationship to them?
+            </p>
             {RELATIONSHIPS.map((rel) => (
-              <label key={rel} style={{ display: 'block', marginBottom: '0.75rem', cursor: 'pointer' }}>
+              <label key={rel.value} className="flex items-center cursor-pointer">
                 <input
                   type="radio"
-                  name="relationship"
-                  value={rel}
-                  checked={relationship === rel}
+                  value={rel.value}
+                  checked={relationship === rel.value}
                   onChange={(e) => setRelationship(e.target.value)}
-                  style={{ marginRight: '0.5rem' }}
+                  required
+                  className="mr-3 text-blue-600 focus:ring-blue-500"
                 />
-                {rel}
+                <span className="text-gray-900">{rel.label}</span>
               </label>
             ))}
           </div>
-        </div>
+        </FormSection>
 
-        {/* Observations */}
-        <div style={{ marginBottom: '2rem' }}>
-          <p style={{ fontWeight: 'bold', marginBottom: '1rem' }}>
-            What have you noticed about their attention, focus, or organizational patterns?
-          </p>
-          <textarea
+        <FormSection title="Observations" className="border-b-0 pb-0">
+          <TextArea
+            label="What have you noticed about their attention, focus, or organizational patterns?"
             value={observations}
-            onChange={(e) => setObservations(e.target.value)}
+            onChange={setObservations}
             placeholder="e.g., difficulty staying focused, forgetfulness, procrastination, restlessness, interrupts often, disorganized..."
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              border: '1px solid #ccc',
-              borderRadius: '4px',
-              fontFamily: 'inherit',
-              fontSize: '1rem',
-              minHeight: '120px',
-              boxSizing: 'border-box',
-            }}
+            required
+            rows={5}
           />
-        </div>
+        </FormSection>
 
-        <button
-          type="submit"
-          disabled={!isComplete || submitted}
-          style={{
-            width: '100%',
-            padding: '0.75rem',
-            background: '#0066cc',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            fontSize: '1rem',
-            opacity: !isComplete || submitted ? 0.5 : 1,
-          }}
-        >
-          {submitted ? 'Saving...' : 'Submit Family Perspective'}
-        </button>
+        <SubmitButton disabled={!isComplete} loading={submitted}>
+          Submit Family Perspective
+        </SubmitButton>
       </form>
     </div>
   );

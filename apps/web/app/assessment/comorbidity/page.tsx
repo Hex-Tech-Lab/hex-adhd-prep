@@ -1,6 +1,12 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAssessmentId, useAssessmentProgress } from '@/lib/hooks/useAssessment';
+import { useFormSubmission } from '@/lib/hooks/useFormSubmission';
+import { ProgressIndicator } from '@/lib/components/ui/ProgressIndicator';
+import { FormSection, TextArea, SubmitButton } from '@/lib/components/ui/FormComponents';
+import { ErrorDisplay } from '@/lib/components/ui/ErrorDisplay';
+import { ComorbidityFormData } from '@/lib/types/assessment';
 
 const COMORBIDITIES = [
   { id: 'anxiety', label: 'Anxiety' },
@@ -10,120 +16,90 @@ const COMORBIDITIES = [
   { id: 'sleep', label: 'Sleep Issues' },
 ];
 
-function getOrCreateAssessmentId(): string {
-  let id = sessionStorage.getItem('assessmentId');
-  if (!id) {
-    id = crypto.randomUUID();
-    sessionStorage.setItem('assessmentId', id);
-  }
-  return id;
-}
-
 export default function ComorbidityPage() {
   const [checked, setChecked] = useState<Record<string, boolean>>({});
   const [notes, setNotes] = useState('');
-  const [submitted, setSubmitted] = useState(false);
-  const [assessmentId, setAssessmentId] = useState<string | null>(null);
+  const { assessmentId } = useAssessmentId();
+  const progress = useAssessmentProgress('comorbidity');
   const router = useRouter();
 
-  useEffect(() => {
-    setAssessmentId(getOrCreateAssessmentId());
-  }, []);
+  const validateForm = (data: ComorbidityFormData) => {
+    return Array.isArray(data.comorbidities);
+  };
+
+  const { submitted, error, submitForm, clearError } = useFormSubmission<ComorbidityFormData>(
+    '/assessment/comorbidity',
+    '/assessment/review',
+    validateForm
+  );
 
   const handleCheck = (id: string) => {
     setChecked((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    if (!assessmentId) return;
 
-    try {
-      const res = await fetch('/api/assessment/comorbidity', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          assessmentId,
-          comorbidities: Object.keys(checked).filter((k) => checked[k]),
-          notes,
-        }),
-      });
-      if (!res.ok) throw new Error('Failed to save comorbidity');
-        router.push('/assessment/family');
-    } catch (err) {
-      alert('Error submitting. Please try again.');
-      setSubmitted(false);
-    }
+    const formData: ComorbidityFormData = {
+      assessmentId,
+      comorbidities: Object.keys(checked).filter((k) => checked[k]),
+      notes,
+    };
+
+    await submitForm(formData);
   };
 
   return (
-    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '2rem' }}>
-      <p style={{ color: '#0066cc', fontWeight: 'bold', marginBottom: '0.5rem' }}>Step 4 of 5: Comorbidity</p>
-      <h1>Other Conditions</h1>
-      <p style={{ color: '#666', marginBottom: '2rem' }}>
-        ADHD often co-occurs with other conditions. Checking these helps clinicians understand your full picture.
-      </p>
+    <div className="max-w-2xl mx-auto px-4 py-8">
+      <ProgressIndicator
+        current={progress.number}
+        total={progress.total}
+        label={progress.label}
+      />
 
-      <form onSubmit={handleSubmit}>
-        {/* Comorbidities */}
-        <div style={{ marginBottom: '2rem', borderBottom: '1px solid #ddd', paddingBottom: '1.5rem' }}>
-          <p style={{ fontWeight: 'bold', marginBottom: '1rem' }}>
-            Have you ever been diagnosed with or experienced any of these?
-          </p>
-          <div>
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">Other Conditions</h1>
+        <p className="text-gray-600">
+          ADHD often co-occurs with other conditions. Checking these helps clinicians understand your full picture.
+        </p>
+      </div>
+
+      <ErrorDisplay error={error} onDismiss={clearError} />
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <FormSection title="Mental Health Conditions">
+          <div className="space-y-3">
+            <p className="text-sm font-medium text-gray-700 mb-3">
+              Have you ever been diagnosed with or experienced any of these?
+            </p>
             {COMORBIDITIES.map((cond) => (
-              <label key={cond.id} style={{ display: 'block', marginBottom: '0.75rem', cursor: 'pointer' }}>
+              <label key={cond.id} className="flex items-center cursor-pointer">
                 <input
                   type="checkbox"
                   checked={checked[cond.id] || false}
                   onChange={() => handleCheck(cond.id)}
-                  style={{ marginRight: '0.5rem' }}
+                  className="mr-3 text-blue-600 focus:ring-blue-500"
                 />
-                {cond.label}
+                <span className="text-gray-900">{cond.label}</span>
               </label>
             ))}
           </div>
-        </div>
+        </FormSection>
 
-        {/* Additional Notes */}
-        <div style={{ marginBottom: '2rem' }}>
-          <p style={{ fontWeight: 'bold', marginBottom: '1rem' }}>
-            Any other medical, psychiatric, or relevant history we should know about?
-          </p>
-          <textarea
+        <FormSection title="Additional Information" className="border-b-0 pb-0">
+          <TextArea
+            label="Any other medical, psychiatric, or relevant history we should know about?"
             value={notes}
-            onChange={(e) => setNotes(e.target.value)}
+            onChange={setNotes}
             placeholder="Optional: medications, family history, previous evaluations, etc."
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              border: '1px solid #ccc',
-              borderRadius: '4px',
-              fontFamily: 'inherit',
-              fontSize: '1rem',
-              minHeight: '100px',
-              boxSizing: 'border-box',
-            }}
+            rows={4}
           />
-        </div>
+        </FormSection>
 
-        <button
-          type="submit"
-          disabled={submitted}
-          style={{
-            width: '100%',
-            padding: '0.75rem',
-            background: '#0066cc',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            fontSize: '1rem',
-            opacity: submitted ? 0.5 : 1,
-          }}
-        >
-          {submitted ? 'Saving...' : 'Continue to Review'}
-        </button>
+        <SubmitButton loading={submitted}>
+          Continue to Review
+        </SubmitButton>
       </form>
     </div>
   );

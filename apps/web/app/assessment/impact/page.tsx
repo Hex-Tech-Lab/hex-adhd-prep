@@ -1,144 +1,98 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-
-function getOrCreateAssessmentId(): string {
-  let id = sessionStorage.getItem('assessmentId');
-  if (!id) {
-    id = crypto.randomUUID();
-    sessionStorage.setItem('assessmentId', id);
-  }
-  return id;
-}
+import { useAssessmentId, useAssessmentProgress } from '@/lib/hooks/useAssessment';
+import { useFormSubmission } from '@/lib/hooks/useFormSubmission';
+import { ProgressIndicator } from '@/lib/components/ui/ProgressIndicator';
+import { FormSection, TextArea, SubmitButton } from '@/lib/components/ui/FormComponents';
+import { ErrorDisplay } from '@/lib/components/ui/ErrorDisplay';
+import { ImpactFormData } from '@/lib/types/assessment';
 
 export default function ImpactPage() {
   const [workImpact, setWorkImpact] = useState('');
   const [relationshipImpact, setRelationshipImpact] = useState('');
   const [biggestChallenge, setBiggestChallenge] = useState('');
-  const [submitted, setSubmitted] = useState(false);
-  const [assessmentId, setAssessmentId] = useState<string | null>(null);
+  const { assessmentId } = useAssessmentId();
+  const progress = useAssessmentProgress('impact');
   const router = useRouter();
 
-  useEffect(() => {
-    setAssessmentId(getOrCreateAssessmentId());
-  }, []);
+  const validateForm = (data: ImpactFormData) => {
+    return !!(data.workImpact?.trim() && data.relationshipImpact?.trim() && data.biggestChallenge?.trim());
+  };
 
-  const handleSubmit = async (e) => {
+  const { submitted, error, submitForm, clearError } = useFormSubmission<ImpactFormData>(
+    '/assessment/impact',
+    '/assessment/comorbidity',
+    validateForm
+  );
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!workImpact.trim() || !relationshipImpact.trim() || !biggestChallenge.trim()) {
-      alert('Please answer all questions');
-      return;
-    }
-    setSubmitted(true);
+    if (!assessmentId) return;
 
-    try {
-      const res = await fetch('/api/assessment/impact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ assessmentId, workImpact, relationshipImpact, biggestChallenge }),
-      });
-      if (!res.ok) throw new Error('Failed to save impact');
-      router.push('/assessment/comorbidity');
-    } catch (err) {
-      alert('Error submitting. Please try again.');
-      setSubmitted(false);
-    }
+    const formData: ImpactFormData = {
+      assessmentId,
+      workImpact,
+      relationshipImpact,
+      biggestChallenge,
+    };
+
+    await submitForm(formData);
   };
 
   const isComplete = workImpact.trim() && relationshipImpact.trim() && biggestChallenge.trim();
 
   return (
-    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '2rem' }}>
-      <p style={{ color: '#0066cc', fontWeight: 'bold', marginBottom: '0.5rem' }}>Step 3 of 5: Impact</p>
-      <h1>Life Impact & Challenges</h1>
-      <p style={{ color: '#666', marginBottom: '2rem' }}>
-        Understanding how ADHD symptoms affect your daily life helps clinicians make accurate assessments.
-      </p>
+    <div className="max-w-2xl mx-auto px-4 py-8">
+      <ProgressIndicator
+        current={progress.number}
+        total={progress.total}
+        label={progress.label}
+      />
 
-      <form onSubmit={handleSubmit}>
-        {/* Q1: Work Impact */}
-        <div style={{ marginBottom: '2rem', borderBottom: '1px solid #ddd', paddingBottom: '1.5rem' }}>
-          <p style={{ fontWeight: 'bold', marginBottom: '1rem' }}>
-            How have attention or organization challenges affected your work or career?
-          </p>
-          <textarea
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">Life Impact & Challenges</h1>
+        <p className="text-gray-600">
+          Understanding how ADHD symptoms affect your daily life helps clinicians make accurate assessments.
+        </p>
+      </div>
+
+      <ErrorDisplay error={error} onDismiss={clearError} />
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <FormSection title="Work & Career Impact">
+          <TextArea
+            label="How have attention or organization challenges affected your work or career?"
             value={workImpact}
-            onChange={(e) => setWorkImpact(e.target.value)}
+            onChange={setWorkImpact}
             placeholder="e.g., missed deadlines, trouble staying focused in meetings, difficulty organizing tasks..."
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              border: '1px solid #ccc',
-              borderRadius: '4px',
-              fontFamily: 'inherit',
-              fontSize: '1rem',
-              minHeight: '100px',
-              boxSizing: 'border-box',
-            }}
+            required
           />
-        </div>
+        </FormSection>
 
-        {/* Q2: Relationship Impact */}
-        <div style={{ marginBottom: '2rem', borderBottom: '1px solid #ddd', paddingBottom: '1.5rem' }}>
-          <p style={{ fontWeight: 'bold', marginBottom: '1rem' }}>
-            How have these challenges affected your relationships or social connections?
-          </p>
-          <textarea
+        <FormSection title="Relationships & Social Impact">
+          <TextArea
+            label="How have these challenges affected your relationships or social connections?"
             value={relationshipImpact}
-            onChange={(e) => setRelationshipImpact(e.target.value)}
+            onChange={setRelationshipImpact}
             placeholder="e.g., losing track of social commitments, difficulty listening, interrupting others, relationship conflicts..."
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              border: '1px solid #ccc',
-              borderRadius: '4px',
-              fontFamily: 'inherit',
-              fontSize: '1rem',
-              minHeight: '100px',
-              boxSizing: 'border-box',
-            }}
+            required
           />
-        </div>
+        </FormSection>
 
-        {/* Q3: Biggest Challenge */}
-        <div style={{ marginBottom: '2rem' }}>
-          <p style={{ fontWeight: 'bold', marginBottom: '1rem' }}>
-            What is your biggest challenge or struggle right now?
-          </p>
-          <textarea
+        <FormSection title="Biggest Challenge" className="border-b-0 pb-0">
+          <TextArea
+            label="What is your biggest challenge or struggle right now?"
             value={biggestChallenge}
-            onChange={(e) => setBiggestChallenge(e.target.value)}
+            onChange={setBiggestChallenge}
             placeholder="Describe your most pressing challenge..."
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              border: '1px solid #ccc',
-              borderRadius: '4px',
-              fontFamily: 'inherit',
-              fontSize: '1rem',
-              minHeight: '100px',
-              boxSizing: 'border-box',
-            }}
+            required
           />
-        </div>
+        </FormSection>
 
-        <button
-          type="submit"
-          disabled={!isComplete || submitted}
-          style={{
-            width: '100%',
-            padding: '0.75rem',
-            background: '#0066cc',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            fontSize: '1rem',
-            opacity: !isComplete || submitted ? 0.5 : 1,
-          }}
-        >
-          {submitted ? 'Saving...' : 'Continue to Next Section'}
-        </button>
+        <SubmitButton disabled={!isComplete} loading={submitted}>
+          Continue to Next Section
+        </SubmitButton>
       </form>
     </div>
   );
