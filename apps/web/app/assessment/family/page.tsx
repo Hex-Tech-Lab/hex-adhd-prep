@@ -30,8 +30,8 @@ export default function FamilyPage() {
   };
 
   const { submitted, error, submitForm, clearError } = useFormSubmission<FamilyFormData>(
-    '/assessment/family',
-    '/assessment/history',
+    '/api/assessment/family/submit',
+    '/assessment/review',
     validateForm
   );
 
