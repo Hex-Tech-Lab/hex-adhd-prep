@@ -126,3 +126,45 @@ export async function insertInterviewResponse(response: {
   if (error) throw error;
   return data;
 }
+
+export async function insertFamilyInput(input: {
+  assessment_id: string;
+  family_token?: string;
+  family_member_name: string;
+  relationship: string;
+  observations: string;
+  submitted_at: string;
+}) {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('family_inputs')
+    .insert([input])
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function getAssessmentByToken(token: string) {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('assessments')
+    .select('*')
+    .eq('family_token', token)
+    .single();
+
+  if (error) return null;
+  return data;
+}
+
+export async function getInterviewResponseCount(assessmentId: string): Promise<number> {
+  const supabase = getSupabase();
+  const { count, error } = await supabase
+    .from('interview_responses')
+    .select('*', { count: 'exact', head: true })
+    .eq('assessment_id', assessmentId);
+
+  if (error) throw error;
+  return count || 0;
+}

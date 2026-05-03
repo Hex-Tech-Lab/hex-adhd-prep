@@ -3,6 +3,12 @@ import { detectFollowUpNeeded } from '@/lib/claude/client';
 
 export async function POST(request: NextRequest) {
   try {
+    // Basic authentication check - in production, this would use proper auth tokens
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+    }
+
     const body = await request.json();
     const { assessmentId, questionId, response, questionText } = body;
 
@@ -20,7 +26,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    const { updateAssessment, insertInterviewResponse } = await import('@/lib/supabase-server');
+    const { updateAssessment, insertInterviewResponse, getInterviewResponseCount } = await import('@/lib/supabase-server');
 
     // Check if follow-up is needed using Claude
     let followUpResult: { needsFollowUp: boolean; followUpQuestion?: string | null } = { needsFollowUp: false };
@@ -39,11 +45,17 @@ export async function POST(request: NextRequest) {
       ai_follow_up_question: followUpResult.followUpQuestion || null,
     });
 
-    // Update assessment progress
+    // Update assessment progress - increment progress based on questions answered
+    // For now, we'll track progress as a percentage based on expected total questions
+    // In a real implementation, this would be more sophisticated
+    const expectedTotalQuestions = 30; // Total questions in interview
+    const currentProgress = await getInterviewResponseCount(assessmentId);
+    const newProgress = Math.min(100, Math.round(((currentProgress + 1) / expectedTotalQuestions) * 100));
+
     const assessment = await updateAssessment(assessmentId, {
-      current_section: 'family',
+      current_section: newProgress >= 100 ? 'family' : 'interview',
       last_activity_at: new Date().toISOString(),
-      interview_progress_percent: 100, // Mark interview as complete
+      interview_progress_percent: newProgress,
     });
 
     return NextResponse.json({

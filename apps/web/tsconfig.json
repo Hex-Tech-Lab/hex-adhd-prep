@@ -4,10 +4,26 @@
     "baseUrl": ".",
     "jsx": "preserve",
     "jsxImportSource": "react",
-    "resolveJsonModule": true,
-    "moduleResolution": "bundler",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@hex/ui": ["../packages/ui"],
+      "@hex/ui/*": ["../packages/ui/*"],
+      "@hex/types": ["../packages/types"],
+      "@hex/types/*": ["../packages/types/*"],
+      "@hex/logic": ["../packages/logic"],
+      "@hex/logic/*": ["../packages/logic/*"],
+      "@hex/hooks": ["../packages/hooks"],
+      "@hex/hooks/*": ["../packages/hooks/*"],
+      "@hex/config": ["../packages/config"],
+      "@hex/config/*": ["../packages/config/*"],
+      "@hex/api-client": ["../packages/api-client"],
+      "@hex/api-client/*": ["../packages/api-client/*"],
+      "@hex/cache": ["../packages/cache"],
+      "@hex/cache/*": ["../packages/cache/*"],
+      "@hex/specs": ["../packages/specs"],
+      "@hex/specs/*": ["../packages/specs/*"],
+      "@hex/database": ["../packages/database"],
+      "@hex/database/*": ["../packages/database/*"]
     }
   },
   "include": [

@@ -277,9 +277,9 @@ CREATE TABLE IF NOT EXISTS public.clinicians (
   city VARCHAR(100),
   state VARCHAR(2),
   phone VARCHAR(20),
-  email VARCHAR(255),
+  email VARCHAR(255) UNIQUE,
   telehealth BOOLEAN DEFAULT TRUE,
-  rating NUMERIC(3,1),
+  rating NUMERIC(3,1) CHECK (rating IS NULL OR (rating >= 0 AND rating <= 5)),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

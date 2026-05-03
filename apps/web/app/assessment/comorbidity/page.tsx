@@ -28,8 +28,8 @@ export default function ComorbidityPage() {
   };
 
   const { submitted, error, submitForm, clearError } = useFormSubmission<ComorbidityFormData>(
-    '/assessment/comorbidity',
-    '/assessment/review',
+    '/api/assessment/comorbidity',
+    '/assessment/family',
     validateForm
   );
 

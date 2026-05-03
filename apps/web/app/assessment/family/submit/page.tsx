@@ -1,13 +1,9 @@
 'use client';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAssessmentId, useAssessmentProgress } from '@/lib/hooks/useAssessment';
-import { useFormSubmission } from '@/lib/hooks/useFormSubmission';
-import { ProgressIndicator } from '@/lib/components/ui/ProgressIndicator';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { FormSection, TextArea, SubmitButton } from '@/lib/components/ui/FormComponents';
 import { Input } from '@/lib/components/ui/Input';
 import { ErrorDisplay } from '@/lib/components/ui/ErrorDisplay';
-import { FamilyFormData } from '@/lib/types/assessment';
 
 const RELATIONSHIPS = [
   { value: 'parent', label: 'Parent' },
@@ -17,56 +13,60 @@ const RELATIONSHIPS = [
   { value: 'other', label: 'Other' },
 ];
 
-export default function FamilyPage() {
+export default function FamilySubmitPage() {
   const [familyMemberName, setFamilyMemberName] = useState('');
   const [relationship, setRelationship] = useState('');
   const [observations, setObservations] = useState('');
-  const { assessmentId } = useAssessmentId();
-  const progress = useAssessmentProgress('family');
-  useRouter(); // Router available but not used in this phase
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const validateForm = (data: FamilyFormData) => {
-    return !!(data.familyMemberName?.trim() && data.relationship && data.observations?.trim());
-  };
-
-  const { submitted, error, submitForm, clearError } = useFormSubmission<FamilyFormData>(
-    '/api/assessment/family/submit',
-    '/assessment/review',
-    validateForm
-  );
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!assessmentId) return;
-
-    const formData: FamilyFormData = {
-      assessmentId,
-      familyMemberName,
-      relationship,
-      observations,
-    };
-
-    await submitForm(formData);
-  };
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const familyToken = searchParams.get('token');
+  const assessmentId = searchParams.get('assessmentId');
 
   const isComplete = familyMemberName.trim() && relationship && observations.trim();
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitted(true);
+    setError(null);
+
+    try {
+      const res = await fetch('/api/assessment/family/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          assessmentId: assessmentId || undefined,
+          familyToken: familyToken || undefined,
+          familyMemberName,
+          relationship,
+          observations,
+        }),
+      });
+
+      if (!res.ok) throw new Error('Failed to submit');
+
+      router.push('/assessment/family/thanks');
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred';
+      setError(errorMessage);
+      setSubmitted(false);
+    }
+  };
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
-      <ProgressIndicator
-        current={progress.number}
-        total={progress.total}
-        label={progress.label}
-      />
-
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Family & Friend Perspective</h1>
         <p className="text-gray-600">
-          People who know you well often notice patterns you might miss. This helps clinicians get a complete picture.
+          {familyToken
+            ? 'Thank you for providing input about someone who may be seeking ADHD assessment.'
+            : 'People who know you well often notice patterns you might miss. This helps clinicians get a complete picture.'}
         </p>
       </div>
 
-      <ErrorDisplay error={error} onDismiss={clearError} />
+      <ErrorDisplay error={error} onDismiss={() => setError(null)} />
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <FormSection title="Family Member Information">
