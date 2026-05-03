@@ -3,9 +3,10 @@ import './globals.css';
 export const metadata = {
   title: 'ADHD-Prep | Assessment & Preparation Tool',
   description: 'Comprehensive ADHD assessment platform to prepare for diagnostic interviews',
-  viewport: 'width=device-width, initial-scale=1',
   robots: 'index, follow',
 };
+
+export const viewport = 'width=device-width, initial-scale=1';
 
 interface RootLayoutProps {
   children: React.ReactNode;
