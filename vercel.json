@@ -2,7 +2,6 @@
   "buildCommand": "pnpm build",
   "devCommand": "pnpm dev",
   "outputDirectory": ".next",
-  "nodeVersion": "24.x",
   "functions": {
     "api/**": {
       "maxDuration": 10
