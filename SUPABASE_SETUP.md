@@ -13,9 +13,14 @@ Run this SQL in your Supabase SQL editor:
 ```sql
 -- Enable required extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE EXTENSION IF NOT EXISTS "vector";
+-- Note: vector extension removed as no vector columns are currently defined
+-- Add back if vector search is implemented in the future
 
 -- Users table
+-- Note: This is a custom users table coupled with Supabase Auth.
+-- The 'id' column should be synchronized with auth.uid() from Supabase Auth.
+-- When creating users via signup API, set id = auth.uid().
+-- password_hash is stored here for custom auth logic, though Supabase Auth handles auth.
 CREATE TABLE users (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   email VARCHAR(255) UNIQUE NOT NULL,
