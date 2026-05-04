@@ -32,11 +32,12 @@ export function CTAButtons({ primaryCTA, secondaryCTA }: CTAButtonsProps) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{
-        duration: prefersReducedMotion ? 0 : 0.2,
-        delay: 0.2,
-        ease: "easeInOut",
+        duration: prefersReducedMotion ? 0 : 0.3,
+        delay: 0.15,
+        ease: "easeOut",
       }}
       className="flex flex-col sm:flex-row gap-4"
+      suppressHydrationWarning
     >
       <Button
         size="lg"
