@@ -1,4 +1,27 @@
+import { Inter } from 'next/font/google';
+import { Poppins } from 'next/font/google';
+import { IBM_Plex_Mono } from 'next/font/google';
 import './globals.css';
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-display',
+  display: 'swap',
+});
+
+const poppins = Poppins({
+  subsets: ['latin'],
+  variable: '--font-body',
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  variable: '--font-mono',
+  weight: ['400', '500', '600'],
+  display: 'swap',
+});
 
 export const metadata = {
   title: 'ADHD-Prep | Assessment & Preparation Tool',
@@ -14,8 +37,8 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className="bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-50 transition-colors">
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${poppins.variable} ${ibmPlexMono.variable}`}>
+      <body className="bg-warm-cream text-dark-gray">
         {children}
       </body>
     </html>

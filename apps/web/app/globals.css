@@ -1,125 +1,94 @@
+@config "../tailwind.config.js";
 @import "tailwindcss";
 
+/* Custom design tokens (from landing.css) */
 @theme {
-  /* shadcn/ui defaults */
-  --color-background: 0 0% 100%;
-  --color-foreground: 222.2 84% 4.9%;
-  --color-card: 0 0% 100%;
-  --color-card-foreground: 222.2 84% 4.9%;
-  --color-primary: 221.2 83.2% 53.3%;
-  --color-primary-foreground: 210 40% 98%;
-  --color-secondary: 210 40% 96%;
-  --color-secondary-foreground: 222.2 84% 4.9%;
-  --color-muted: 210 40% 96%;
-  --color-muted-foreground: 215.4 16.3% 46.9%;
-  --color-accent: 210 40% 96%;
-  --color-accent-foreground: 222.2 84% 4.9%;
-  --color-destructive: 0 84.2% 60.2%;
-  --color-destructive-foreground: 210 40% 98%;
-  --color-border: 214.3 31.8% 91.4%;
-  --color-input: 214.3 31.8% 91.4%;
-  --color-ring: 221.2 83.2% 53.3%;
-  --radius: 0.5rem;
+  --sage: #5B8C6C;
+  --sage-dark: #3D5E4D;
+  --sage-light: #E8F1EB;
+  --cream: #F5F2ED;
+  --cream-lighter: #FAFAF8;
+  --cream-darker: #E8E5DC;
+  --coral: #D4876A;
+  --coral-dark: #B86A4F;
+  --coral-light: #E8CCBB;
+  --blue: #6B9BC5;
+  --text-primary: #1F2937;
+  --text-secondary: #6B7280;
+  --text-tertiary: #9CA3AF;
+  --border: #E5E7EB;
+  --border-dark: #9CA3AF;
+  --focus: #3D5E4D;
+  --white: #FFFFFF;
 
-  /* ADHD Prep design system colors */
-  --color-sage-green: 150 35% 42%;
-  --color-sage-green-light: 150 35% 90%;
-  --color-sage-green-dark: 150 35% 25%;
-  --color-soft-blue: 201 46% 65%;
-  --color-soft-blue-light: 201 46% 92%;
-  --color-warm-cream: 40 17% 95%;
-  --color-dark-gray: 220 14% 18%;
-  --color-medium-gray: 220 16% 50%;
-  --color-light-gray: 220 14% 90%;
+  /* Font family variables (Next.js fonts set these on <html>) */
+  --font-display: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-body: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
 }
 
-@layer base {
-  * {
-    @apply border-border;
+/* Custom utility classes for design system */
+@utility text-sage { color: var(--sage); }
+@utility text-sage-dark { color: var(--sage-dark); }
+@utility text-sage-light { color: var(--sage-light); }
+@utility bg-sage { background-color: var(--sage); }
+@utility bg-sage-dark { background-color: var(--sage-dark); }
+@utility bg-sage-light { background-color: var(--sage-light); }
+@utility border-sage { border-color: var(--sage); }
+
+/* Prompt naming aliases */
+@utility text-sage-green { color: var(--sage); }
+@utility text-sage-green-light { color: var(--sage-light); }
+@utility text-sage-green-dark { color: var(--sage-dark); }
+@utility bg-sage-green { background-color: var(--sage); }
+@utility bg-sage-green-light { background-color: var(--sage-light); }
+@utility bg-sage-green-dark { background-color: var(--sage-dark); }
+@utility border-sage-green { border-color: var(--sage); }
+
+@utility text-soft-blue { color: var(--blue); }
+@utility bg-soft-blue-light { background-color: var(--blue); opacity: 0.1; }
+@utility border-soft-blue { border-color: var(--blue); }
+
+@utility bg-warm-cream { background-color: var(--cream); }
+
+@utility text-dark-gray { color: var(--text-primary); }
+@utility text-medium-gray { color: var(--text-secondary); }
+@utility text-light-gray { color: var(--text-tertiary); }
+@utility bg-light-gray { background-color: var(--border); }
+@utility border-light-gray { border-color: var(--border); }
+
+/* Ring color utilities for focus */
+@utility ring-sage-green { --tw-ring-color: var(--sage); }
+@utility ring-sage-green-dark { --tw-ring-color: var(--sage-dark); }
+
+/* Base body styles from landing.css */
+body {
+  background: var(--cream);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.75;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Box-sizing reset */
+* {
+  box-sizing: border-box;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
-  
-  body {
-    @apply bg-background text-foreground;
-  }
-  
-  html {
-    scroll-behavior: smooth;
-  }
-  
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-    }
-  }
-}
-
-/* Utility classes for design system colors */
-@utility text-sage-green {
-  color: hsl(var(--color-sage-green));
-}
-
-@utility text-sage-green-light {
-  color: hsl(var(--color-sage-green-light));
-}
-
-@utility text-sage-green-dark {
-  color: hsl(var(--color-sage-green-dark));
-}
-
-@utility bg-sage-green {
-  background-color: hsl(var(--color-sage-green));
-}
-
-@utility bg-sage-green-light {
-  background-color: hsl(var(--color-sage-green-light));
-}
-
-@utility bg-sage-green-dark {
-  background-color: hsl(var(--color-sage-green-dark));
-}
-
-@utility border-sage-green {
-  border-color: hsl(var(--color-sage-green));
-}
-
-@utility text-soft-blue {
-  color: hsl(var(--color-soft-blue));
-}
-
-@utility bg-soft-blue-light {
-  background-color: hsl(var(--color-soft-blue-light));
-}
-
-@utility border-soft-blue {
-  border-color: hsl(var(--color-soft-blue));
-}
-
-@utility text-warm-cream {
-  color: hsl(var(--color-warm-cream));
-}
-
-@utility bg-warm-cream {
-  background-color: hsl(var(--color-warm-cream));
-}
-
-@utility text-dark-gray {
-  color: hsl(var(--color-dark-gray));
-}
-
-@utility text-medium-gray {
-  color: hsl(var(--color-medium-gray));
-}
-
-@utility text-light-gray {
-  color: hsl(var(--color-light-gray));
-}
-
-@utility bg-light-gray {
-  background-color: hsl(var(--color-light-gray));
-}
-
-@utility border-light-gray {
-  border-color: hsl(var(--color-light-gray));
 }
