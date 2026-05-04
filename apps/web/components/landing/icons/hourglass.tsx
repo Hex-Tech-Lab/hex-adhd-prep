@@ -8,13 +8,13 @@ export function HourglassIcon(props: React.SVGProps<SVGSVGElement>) {
       viewBox="0 0 24 24"
       stroke="currentColor"
       fill="none"
-      strokeWidth="1.5"
+      strokeWidth="1.75"
       strokeLinecap="round"
       strokeLinejoin="round"
       {...props}
     >
-      <path d="M6 2h12l-1 5.5L12 12l-5-4.5L6 2Z" />
-      <path d="M6 22h12l-1-5.5L12 12l-5 4.5L6 22Z" />
+      <path d="M5 3h14l-2 7L12 13l-5-3L5 3Z" />
+      <path d="M5 21h14l-2-7L12 11l-5 3L5 21Z" />
     </svg>
   )
 }

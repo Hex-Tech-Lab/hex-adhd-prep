@@ -44,6 +44,7 @@
 @utility bg-sage-green-light { background-color: var(--sage-light); }
 @utility bg-sage-green-dark { background-color: var(--sage-dark); }
 @utility border-sage-green { border-color: var(--sage); }
+@utility border-sage-green-dark { border-color: var(--sage-dark); }
 
 @utility text-soft-blue { color: var(--blue); }
 @utility bg-soft-blue-light { background-color: var(--blue); opacity: 0.1; }

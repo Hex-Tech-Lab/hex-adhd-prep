@@ -1,7 +1,7 @@
 import { HeroHeadline } from "./hero-headline"
 import { HeroSubheadline } from "./hero-subheadline"
 import { CTAButtons } from "./CTA-buttons"
-import { TrustCards } from "./trust-cards"
+import { TrustCards, TrustCard } from "./trust-cards"
 import { SidePanel } from "./side-panel"
 import { HourglassIcon } from "./icons/hourglass"
 import { DocumentCheckIcon } from "./icons/document-check"
@@ -19,11 +19,7 @@ interface LandingHeroProps {
     label: string
     href: string
   }
-  trustCards?: Array<{
-    icon: React.ReactNode
-    label: string
-    description: string
-  }>
+  trustCards?: TrustCard[]
   progressSections?: Array<{
     title: string
     description?: string
@@ -73,11 +69,11 @@ export default function LandingHero({
 }: LandingHeroProps) {
   return (
     <section className="w-full bg-warm-cream">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20 lg:py-24">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 lg:py-32">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-20 items-start">
           {/* Left column - Main content (60% on desktop) */}
           <div className="lg:col-span-7 xl:col-span-8">
-            <div className="space-y-8">
+            <div className="space-y-10">
               <HeroHeadline headline={headline} subHeadline={headlineSub} />
               <HeroSubheadline subheadline={subheadline} />
 
@@ -89,7 +85,7 @@ export default function LandingHero({
 
               <TrustCards cards={trustCards} />
 
-              <div className="bg-cream-lighter border border-light-gray border-l-sage-green border-l-4 p-4 rounded-lg text-sm text-medium-gray leading-relaxed max-w-2xl">
+              <div className="bg-cream-lighter border border-light-gray border-l-sage-green-dark border-l-4 p-4 rounded-lg text-sm text-medium-gray leading-relaxed max-w-2xl">
                 <strong className="text-dark-gray font-semibold">Important:</strong> ADHD-Prep does not provide a diagnosis. This is preparation for a conversation with a licensed clinician, who confirms any diagnosis.
               </div>
             </div>

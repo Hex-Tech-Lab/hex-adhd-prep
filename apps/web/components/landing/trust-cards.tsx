@@ -1,8 +1,8 @@
 import * as React from "react"
 import { Card, CardContent } from "@/components/ui/card"
 
-interface TrustCard {
-  icon: React.ReactElement
+export interface TrustCard {
+  icon: React.ReactNode
   label: string
   description: string
 }
