@@ -10,7 +10,9 @@ interface SidePanelProps {
 }
 
 export function SidePanel({ sections }: SidePanelProps) {
-  const progress = Math.round((sections.filter(s => s.completed).length / sections.length) * 100)
+  const progress = sections.length > 0
+    ? Math.round((sections.filter(s => s.completed).length / sections.length) * 100)
+    : 0
 
   return (
     <div className="hidden lg:block">
