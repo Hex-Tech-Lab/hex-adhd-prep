@@ -1,7 +1,6 @@
 "use client"
 
 import { motion, useReducedMotion } from "framer-motion"
-import { Progress } from "@/components/ui/progress"
 
 interface SidePanelProps {
   sections: Array<{
@@ -35,7 +34,18 @@ export function SidePanel({ sections }: SidePanelProps) {
             <span>Overall completion</span>
             <span>{progress}%</span>
           </div>
-          <Progress value={progress} className="h-2 bg-light-gray [&>div]:bg-sage-green" />
+          <div className="h-2 bg-light-gray rounded-full overflow-hidden">
+            <motion.div
+              className="h-full bg-sage-green rounded-full"
+              initial={{ width: 0 }}
+              animate={{ width: `${progress}%` }}
+              transition={{
+                duration: prefersReducedMotion ? 0 : 0.5,
+                delay: 0.6,
+                ease: "easeInOut",
+              }}
+            />
+          </div>
         </div>
 
         <ul className="space-y-3">
