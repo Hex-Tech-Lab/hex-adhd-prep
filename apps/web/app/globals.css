@@ -51,6 +51,7 @@
 @utility border-soft-blue { border-color: var(--blue); }
 
 @utility bg-warm-cream { background-color: var(--cream); }
+@utility bg-cream-lighter { background-color: var(--cream-lighter); }
 
 @utility text-dark-gray { color: var(--text-primary); }
 @utility text-medium-gray { color: var(--text-secondary); }

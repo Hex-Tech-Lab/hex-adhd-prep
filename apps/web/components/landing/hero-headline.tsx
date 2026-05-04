@@ -9,10 +9,9 @@ const defaultSubHeadline = "ADHD evaluation"
 export function HeroHeadline({ headline = defaultHeadline, subHeadline = defaultSubHeadline }: HeroHeadlineProps) {
   return (
     <h1 className="font-bold text-dark-gray tracking-tight space-y-2">
-      <span className="block text-2xl md:text-3xl lg:text-4xl">{headline}</span>
-      <span className="relative text-sage-dark inline-block text-3xl md:text-4xl lg:text-5xl">
+      <span className="block text-4xl md:text-5xl lg:text-6xl">{headline}</span>
+      <span className="block text-sage-green text-5xl md:text-6xl lg:text-7xl">
         {subHeadline}
-        <span className="absolute -bottom-1 left-0 right-0 h-2 bg-sage-green-light -z-10 rounded-sm" />
       </span>
     </h1>
   )

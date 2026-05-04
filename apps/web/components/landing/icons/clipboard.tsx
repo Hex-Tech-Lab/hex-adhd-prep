@@ -8,7 +8,7 @@ export function ClipboardIcon(props: React.SVGProps<SVGSVGElement>) {
       viewBox="0 0 24 24"
       stroke="currentColor"
       fill="none"
-      strokeWidth="1.75"
+      strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
       {...props}
