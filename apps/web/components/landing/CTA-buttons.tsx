@@ -1,6 +1,5 @@
 "use client"
 
-import { motion, useReducedMotion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 
@@ -16,7 +15,6 @@ interface CTAButtonsProps {
 }
 
 export function CTAButtons({ primaryCTA, secondaryCTA }: CTAButtonsProps) {
-  const prefersReducedMotion = useReducedMotion()
   const router = useRouter()
 
   const handlePrimaryClick = () => {
@@ -28,17 +26,7 @@ export function CTAButtons({ primaryCTA, secondaryCTA }: CTAButtonsProps) {
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{
-        duration: prefersReducedMotion ? 0 : 0.3,
-        delay: 0.15,
-        ease: "easeOut",
-      }}
-      className="flex flex-col sm:flex-row gap-4"
-      suppressHydrationWarning
-    >
+    <div className="flex flex-col sm:flex-row gap-4">
       <Button
         size="lg"
         onClick={handlePrimaryClick}
@@ -54,6 +42,6 @@ export function CTAButtons({ primaryCTA, secondaryCTA }: CTAButtonsProps) {
       >
         {secondaryCTA.label}
       </Button>
-    </motion.div>
+    </div>
   )
 }

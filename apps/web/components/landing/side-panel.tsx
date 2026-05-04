@@ -1,7 +1,5 @@
 "use client"
 
-import { motion, useReducedMotion } from "framer-motion"
-
 interface SidePanelProps {
   sections: Array<{
     title: string
@@ -12,20 +10,10 @@ interface SidePanelProps {
 }
 
 export function SidePanel({ sections }: SidePanelProps) {
-  const prefersReducedMotion = useReducedMotion()
   const progress = Math.round((sections.filter(s => s.completed).length / sections.length) * 100)
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{
-        duration: prefersReducedMotion ? 0 : 0.3,
-        delay: 0.4,
-        ease: "easeInOut",
-      }}
-      className="hidden lg:block"
-    >
+    <div className="hidden lg:block">
       <div className="sticky top-8 bg-warm-cream rounded-lg border border-light-gray p-6 max-w-sm">
         <h3 className="text-lg font-semibold text-dark-gray mb-4">Assessment Progress</h3>
 
@@ -35,30 +23,17 @@ export function SidePanel({ sections }: SidePanelProps) {
             <span>{progress}%</span>
           </div>
           <div className="h-2 bg-light-gray rounded-full overflow-hidden">
-            <motion.div
-              className="h-full bg-sage-green rounded-full"
-              initial={{ width: 0 }}
-              animate={{ width: `${progress}%` }}
-              transition={{
-                duration: prefersReducedMotion ? 0 : 0.5,
-                delay: 0.6,
-                ease: "easeInOut",
-              }}
+            <div
+              className="h-full bg-sage-green rounded-full transition-all duration-300"
+              style={{ width: `${progress}%` }}
             />
           </div>
         </div>
 
         <ul className="space-y-3">
           {sections.map((section, index) => (
-            <motion.li
+            <li
               key={index}
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{
-                duration: prefersReducedMotion ? 0 : 0.2,
-                delay: 0.5 + index * 0.1,
-                ease: "easeInOut",
-              }}
               className="flex items-start gap-3"
             >
               <div className={`flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center mt-0.5 ${
@@ -80,7 +55,7 @@ export function SidePanel({ sections }: SidePanelProps) {
                   <p className="text-xs text-medium-gray mt-0.5">{section.description}</p>
                 )}
               </div>
-            </motion.li>
+            </li>
           ))}
         </ul>
 
@@ -97,6 +72,6 @@ export function SidePanel({ sections }: SidePanelProps) {
           </span>
         </div>
       </div>
-    </motion.div>
+    </div>
   )
 }
