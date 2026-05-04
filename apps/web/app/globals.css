@@ -1,61 +1,122 @@
-@import "tailwindcss";
-
-@theme {
-<<<<<<< Updated upstream
-  /* shadcn/ui defaults */
-=======
-  /* Default shadcn/ui colors */
->>>>>>> Stashed changes
-  --color-background: 0 0% 100%;
-  --color-foreground: 222.2 84% 4.9%;
-  --color-card: 0 0% 100%;
-  --color-card-foreground: 222.2 84% 4.9%;
-  --color-primary: 221.2 83.2% 53.3%;
-  --color-primary-foreground: 210 40% 98%;
-  --color-secondary: 210 40% 96%;
-  --color-secondary-foreground: 222.2 84% 4.9%;
-  --color-muted: 210 40% 96%;
-  --color-muted-foreground: 215.4 16.3% 46.9%;
-  --color-accent: 210 40% 96%;
-  --color-accent-foreground: 222.2 84% 4.9%;
-  --color-destructive: 0 84.2% 60.2%;
-  --color-destructive-foreground: 210 40% 98%;
-  --color-border: 214.3 31.8% 91.4%;
-  --color-input: 214.3 31.8% 91.4%;
-  --color-ring: 221.2 83.2% 53.3%;
-  --radius: 0.5rem;
-
-<<<<<<< Updated upstream
-  /* ADHD Prep design system - prompt palette */
-=======
-  /* ADHD Prep design system colors */
->>>>>>> Stashed changes
-  --color-sage-green: 150 35% 42%;
-  --color-sage-green-light: 150 35% 90%;
-  --color-sage-green-dark: 150 35% 25%;
-  --color-soft-blue: 201 46% 65%;
-  --color-soft-blue-light: 201 46% 92%;
-  --color-warm-cream: 40 17% 95%;
-  --color-dark-gray: 220 14% 18%;
-  --color-medium-gray: 220 16% 50%;
-  --color-light-gray: 220 14% 90%;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
+    /* ADHD Prep design system colors */
+    --sage: 91 19% 38%;
+    --sage-dark: 91 19% 28%;
+    --sage-light: 91 19% 92%;
+    --cream: 42 15% 93%;
+    --cream-lighter: 42 15% 96%;
+    --cream-darker: 42 15% 85%;
+    --coral: 12 78% 58%;
+    --coral-dark: 12 78% 45%;
+    --coral-light: 12 78% 78%;
+    --blue: 201 100% 45%;
+    --text-primary: 222.2 84% 4.9%;
+    --text-secondary: 215.4 16.3% 46.9%;
+    --text-tertiary: 215.4 16.3% 65.1%;
+    --focus: 91 19% 28%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 94.1%;
+  }
+
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
   html {
     scroll-behavior: smooth;
   }
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-    }
+}
+
+@layer utilities {
+  /* ADHD-Prep design system color utilities */
+  .text-sage { color: hsl(var(--sage)); }
+  .text-sage-dark { color: hsl(var(--sage-dark)); }
+  .text-sage-light { color: hsl(var(--sage-light)); }
+  .bg-sage { background-color: hsl(var(--sage)); }
+  .bg-sage-dark { background-color: hsl(var(--sage-dark)); }
+  .bg-sage-light { background-color: hsl(var(--sage-light)); }
+  .border-sage { border-color: hsl(var(--sage)); }
+  .ring-sage { --tw-ring-color: hsl(var(--sage)); }
+  .ring-sage-dark { --tw-ring-color: hsl(var(--sage-dark)); }
+
+  .text-coral { color: hsl(var(--coral)); }
+  .text-coral-dark { color: hsl(var(--coral-dark)); }
+  .text-coral-light { color: hsl(var(--coral-light)); }
+  .bg-coral { background-color: hsl(var(--coral)); }
+  .bg-coral-dark { background-color: hsl(var(--coral-dark)); }
+  .bg-coral-light { background-color: hsl(var(--coral-light)); }
+  .border-coral { border-color: hsl(var(--coral)); }
+
+  .text-blue { color: hsl(var(--blue)); }
+  .bg-blue { background-color: hsl(var(--blue)); }
+  .border-blue { border-color: hsl(var(--blue)); }
+
+  .text-cream { color: hsl(var(--cream)); }
+  .bg-cream { background-color: hsl(var(--cream)); }
+  .border-cream { border-color: hsl(var(--cream)); }
+
+  .text-cream-lighter { color: hsl(var(--cream-lighter)); }
+  .bg-cream-lighter { background-color: hsl(var(--cream-lighter)); }
+  .border-cream-lighter { border-color: hsl(var(--cream-lighter)); }
+
+  .text-cream-darker { color: hsl(var(--cream-darker)); }
+  .bg-cream-darker { background-color: hsl(var(--cream-darker)); }
+  .border-cream-darker { border-color: hsl(var(--cream-darker)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
