@@ -28,10 +28,10 @@ export function CTAButtons({ primaryCTA, secondaryCTA }: CTAButtonsProps) {
       }}
       className="flex flex-col sm:flex-row gap-4"
     >
-      <Button asChild size="lg" className="bg-sage-green text-white hover:bg-sage-green/90 focus-visible:ring-2 focus-visible:ring-dark-sage">
+      <Button asChild size="lg" className="bg-sage-green text-white hover:bg-sage-green/90 focus-visible:ring-2 focus-visible:ring-sage-green-dark">
         <a href={primaryCTA.href}>{primaryCTA.label}</a>
       </Button>
-      <Button asChild size="lg" variant="outline" className="border-soft-blue text-soft-blue hover:bg-soft-blue/10 focus-visible:ring-2 focus-visible:ring-dark-sage">
+      <Button asChild size="lg" variant="outline" className="border-soft-blue text-soft-blue hover:bg-soft-blue/10 focus-visible:ring-2 focus-visible:ring-sage-green-dark">
         <a href={secondaryCTA.href}>{secondaryCTA.label}</a>
       </Button>
     </motion.div>
