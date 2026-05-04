@@ -9,6 +9,7 @@ import { ClipboardIcon } from "./icons/clipboard"
 
 interface LandingHeroProps {
   headline?: string
+  headlineSub?: string
   subheadline?: string
   primaryCTA?: {
     label: string
@@ -31,24 +32,25 @@ interface LandingHeroProps {
   }>
 }
 
-const defaultHeadline = "Prepare for your ADHD assessment with confidence"
+const defaultHeadline = "Prepare for your"
+const defaultHeadlineSub = "ADHD evaluation"
 const defaultSubheadline = "Our structured tool helps you gather the necessary information, track symptoms, and receive a clinician-ready report — all in about 45 minutes."
 
 const defaultTrustCards = [
   {
     icon: <HourglassIcon />,
-    label: "45-minute assessment",
-    description: "Complete in about 45 minutes",
+    label: "45-Minute Assessment",
+    description: "Quick, structured, comprehensive",
   },
   {
     icon: <DocumentCheckIcon />,
-    label: "Not a diagnosis",
-    description: "This is not a substitute for professional medical advice",
+    label: "Not a Diagnosis",
+    description: "Preparation only. Clinician confirms.",
   },
   {
     icon: <ClipboardIcon />,
-    label: "Clinician-ready report",
-    description: "Share your results with your healthcare provider",
+    label: "Clinician-Ready Report",
+    description: "Export as PDF, share with provider",
   },
 ]
 
@@ -62,6 +64,7 @@ const defaultProgressSections = [
 
 export default function LandingHero({
   headline = defaultHeadline,
+  headlineSub = defaultHeadlineSub,
   subheadline = defaultSubheadline,
   primaryCTA = { label: "Start Assessment", href: "/assessment" },
   secondaryCTA = { label: "Learn More", href: "/how-it-works" },
@@ -70,12 +73,12 @@ export default function LandingHero({
 }: LandingHeroProps) {
   return (
     <section className="w-full bg-warm-cream">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 lg:py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20 lg:py-24">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           {/* Left column - Main content (60% on desktop) */}
           <div className="lg:col-span-7 xl:col-span-8">
-            <div className="space-y-6">
-              <HeroHeadline headline={headline} />
+            <div className="space-y-8">
+              <HeroHeadline headline={headline} subHeadline={headlineSub} />
               <HeroSubheadline subheadline={subheadline} />
 
               <CTAButtons primaryCTA={primaryCTA} secondaryCTA={secondaryCTA} />
@@ -86,9 +89,9 @@ export default function LandingHero({
 
               <TrustCards cards={trustCards} />
 
-              <p className="text-xs text-medium-gray max-w-2xl leading-relaxed">
-                This tool is designed to help you prepare for a professional ADHD assessment. It is not a diagnostic tool and does not replace the expertise of a qualified healthcare provider.
-              </p>
+              <div className="bg-cream-lighter border border-light-gray border-l-sage-green border-l-4 p-4 rounded-lg text-sm text-medium-gray leading-relaxed max-w-2xl">
+                <strong className="text-dark-gray font-semibold">Important:</strong> ADHD-Prep does not provide a diagnosis. This is preparation for a conversation with a licensed clinician, who confirms any diagnosis.
+              </div>
             </div>
           </div>
 

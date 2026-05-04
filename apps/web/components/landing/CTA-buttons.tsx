@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion"
 import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation"
 
 interface CTAButtonsProps {
   primaryCTA: {
@@ -16,6 +17,15 @@ interface CTAButtonsProps {
 
 export function CTAButtons({ primaryCTA, secondaryCTA }: CTAButtonsProps) {
   const prefersReducedMotion = useReducedMotion()
+  const router = useRouter()
+
+  const handlePrimaryClick = () => {
+    router.push(primaryCTA.href)
+  }
+
+  const handleSecondaryClick = () => {
+    router.push(secondaryCTA.href)
+  }
 
   return (
     <motion.div
@@ -28,11 +38,20 @@ export function CTAButtons({ primaryCTA, secondaryCTA }: CTAButtonsProps) {
       }}
       className="flex flex-col sm:flex-row gap-4"
     >
-      <Button asChild size="lg" className="bg-sage-green text-white hover:bg-sage-green/90 focus-visible:ring-2 focus-visible:ring-sage-green-dark">
-        <a href={primaryCTA.href}>{primaryCTA.label}</a>
+      <Button
+        size="lg"
+        onClick={handlePrimaryClick}
+        className="bg-sage-green text-white hover:bg-sage-green/90 focus-visible:ring-2 focus-visible:ring-sage-green-dark"
+      >
+        {primaryCTA.label}
       </Button>
-      <Button asChild size="lg" variant="outline" className="border-soft-blue text-soft-blue hover:bg-soft-blue/10 focus-visible:ring-2 focus-visible:ring-sage-green-dark">
-        <a href={secondaryCTA.href}>{secondaryCTA.label}</a>
+      <Button
+        size="lg"
+        variant="outline"
+        onClick={handleSecondaryClick}
+        className="border-soft-blue text-soft-blue hover:bg-soft-blue/10 focus-visible:ring-2 focus-visible:ring-sage-green-dark"
+      >
+        {secondaryCTA.label}
       </Button>
     </motion.div>
   )
