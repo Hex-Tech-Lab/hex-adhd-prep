@@ -1,69 +1,95 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@config "../tailwind.config.js";
+@import "tailwindcss";
 
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222.2 84% 4.9%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222.2 84% 4.9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
-    --radius: 0.5rem;
-  }
+/* Custom design tokens (from landing.css) */
+@theme {
+  --sage: #5B8C6C;
+  --sage-dark: #3D5E4D;
+  --sage-light: #E8F1EB;
+  --cream: #F5F2ED;
+  --cream-lighter: #FAFAF8;
+  --cream-darker: #E8E5DC;
+  --coral: #D4876A;
+  --coral-dark: #B86A4F;
+  --coral-light: #E8CCBB;
+  --blue: #6B9BC5;
+  --text-primary: #1F2937;
+  --text-secondary: #6B7280;
+  --text-tertiary: #9CA3AF;
+  --border: #E5E7EB;
+  --border-dark: #9CA3AF;
+  --focus: #3D5E4D;
+  --white: #FFFFFF;
 
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 84% 4.9%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 94.1%;
-  }
+  /* Font family variables (Next.js fonts set these on <html>) */
+  --font-display: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-body: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-  html {
-    scroll-behavior: smooth;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-    }
+/* Custom utility classes for design system */
+@utility text-sage { color: var(--sage); }
+@utility text-sage-dark { color: var(--sage-dark); }
+@utility text-sage-light { color: var(--sage-light); }
+@utility bg-sage { background-color: var(--sage); }
+@utility bg-sage-dark { background-color: var(--sage-dark); }
+@utility bg-sage-light { background-color: var(--sage-light); }
+@utility border-sage { border-color: var(--sage); }
+
+/* Prompt naming aliases */
+@utility text-sage-green { color: var(--sage); }
+@utility text-sage-green-light { color: var(--sage-light); }
+@utility text-sage-green-dark { color: var(--sage-dark); }
+@utility bg-sage-green { background-color: var(--sage); }
+@utility bg-sage-green-light { background-color: var(--sage-light); }
+@utility bg-sage-green-dark { background-color: var(--sage-dark); }
+@utility border-sage-green { border-color: var(--sage); }
+@utility border-sage-green-dark { border-color: var(--sage-dark); }
+
+@utility text-soft-blue { color: var(--blue); }
+@utility bg-soft-blue-light { background-color: var(--blue); opacity: 0.1; }
+@utility border-soft-blue { border-color: var(--blue); }
+
+@utility bg-warm-cream { background-color: var(--cream); }
+
+@utility text-dark-gray { color: var(--text-primary); }
+@utility text-medium-gray { color: var(--text-secondary); }
+@utility text-light-gray { color: var(--text-tertiary); }
+@utility bg-light-gray { background-color: var(--border); }
+@utility border-light-gray { border-color: var(--border); }
+
+/* Ring color utilities for focus */
+@utility ring-sage-green { --tw-ring-color: var(--sage); }
+@utility ring-sage-green-dark { --tw-ring-color: var(--sage-dark); }
+
+/* Base body styles from landing.css */
+body {
+  background: var(--cream);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.75;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Box-sizing reset */
+* {
+  box-sizing: border-box;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
