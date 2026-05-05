@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { detectFollowUpNeeded } from '@/lib/claude/client';
+import { detectFollowUpNeeded, generateMemoryScaffolds } from '@/lib/claude/client';
 import { updateAssessment, insertInterviewResponse, getInterviewResponseCount } from '@/lib/supabase-server';
 import { TOTAL_INTERVIEW_QUESTIONS } from '@/lib/constants';
 
@@ -36,6 +36,44 @@ export async function POST(request: NextRequest) {
       console.warn('Follow-up detection failed, continuing without:', error);
     }
 
+    // Check if memory scaffolding is needed
+    let memoryScaffolds: string[] | null = null;
+    const memoryTriggerPhrases = [
+      "i don't remember",
+      "i can't recall",
+      "i don't know",
+      "no memory",
+      "can't remember",
+      "don't recall",
+      "fuzzy memory",
+      "unclear",
+      "not sure about that"
+    ];
+
+    const needsMemoryHelp = memoryTriggerPhrases.some(phrase =>
+      response.toLowerCase().includes(phrase)
+    );
+
+    if (needsMemoryHelp) {
+      try {
+        // Determine age group based on question content (simplified logic)
+        let ageGroup: 'early' | 'school' | 'adolescent' | 'general' = 'general';
+        const questionLower = (questionText || '').toLowerCase();
+
+        if (questionLower.includes('child') || questionLower.includes('early') || questionLower.includes('preschool')) {
+          ageGroup = 'early';
+        } else if (questionLower.includes('school') || questionLower.includes('elementary') || questionLower.includes('middle')) {
+          ageGroup = 'school';
+        } else if (questionLower.includes('teen') || questionLower.includes('adolescent') || questionLower.includes('high school')) {
+          ageGroup = 'adolescent';
+        }
+
+        memoryScaffolds = await generateMemoryScaffolds(ageGroup);
+      } catch (error) {
+        console.warn('Memory scaffolding failed, continuing without:', error);
+      }
+    }
+
     // Get current response count BEFORE inserting the new one
     const previousCount = await getInterviewResponseCount(assessmentId);
     
@@ -66,6 +104,7 @@ export async function POST(request: NextRequest) {
       success: true,
       assessment,
       followUpQuestion: shouldReturnFollowUp ? followUpResult.followUpQuestion || null : null,
+      memoryScaffolds: memoryScaffolds || null,
     });
   } catch (err) {
     console.error('Interview save error:', err);

@@ -1,4 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
+import { INTERVIEW_SYSTEM_PROMPTS, getFallbackQuestionsForDomain, getMemoryScaffoldsForAgeGroup } from './prompts';
 
 let anthropicClient: Anthropic | null = null;
 
@@ -24,27 +25,17 @@ export async function generateInterviewQuestion(
 ): Promise<string> {
   const client = getAnthropicClient();
 
-  const systemPrompt = `You are an empathic clinical interviewer specializing in ADHD assessment.
-Your role is to ask thoughtful, open-ended questions that help gather detailed information about the person's experiences.
+  const systemPrompt = INTERVIEW_SYSTEM_PROMPTS.interviewer;
 
-Guidelines:
-- Ask one question at a time
-- Questions should be conversational and non-judgmental
-- Focus on gathering specific examples and experiences
-- Avoid yes/no questions when possible
-- Keep questions under 150 characters
-- Be supportive and understanding in tone
+  const userPrompt = `CONTEXT: ADHD assessment interview in "${section}" domain
+PREVIOUS RESPONSES: ${previousResponses.join('; ')}
 
-Current context: This is for an ADHD assessment interview in the "${section}" section.`;
-
-  const userPrompt = `Based on these previous responses: ${previousResponses.join('; ')}
-
-Generate the next most appropriate interview question for the "${section}" section.`;
+Generate the next most appropriate interview question.`;
 
   try {
     const response = await client.messages.create({
       model: 'claude-3-5-sonnet-20241022',
-      max_tokens: 150,
+      max_tokens: 120,
       system: systemPrompt,
       messages: [{ role: 'user', content: userPrompt }],
       temperature: 0.7,
@@ -61,6 +52,14 @@ Generate the next most appropriate interview question for the "${section}" secti
     return question;
   } catch (error) {
     console.error('Claude API error:', error);
+    // Enhanced fallback using domain-specific question banks
+    return getEnhancedFallbackQuestion(section);
+  }
+}
+
+    return question;
+  } catch (error) {
+    console.error('Claude API error:', error);
     // Fallback to static questions
     return getFallbackQuestion(section);
   }
@@ -72,28 +71,17 @@ export async function detectFollowUpNeeded(
 ): Promise<{ needsFollowUp: boolean; followUpQuestion?: string | null }> {
   const client = getAnthropicClient();
 
-  const systemPrompt = `You are analyzing interview responses for ADHD assessment.
-Determine if the response is vague, incomplete, or would benefit from a follow-up question.
+  const systemPrompt = INTERVIEW_SYSTEM_PROMPTS.followUpDetector;
 
-Return a JSON object with:
-- needsFollowUp: boolean
-- followUpQuestion: string (only if needsFollowUp is true, max 100 characters)
+  const userPrompt = `QUESTION: ${question}
+RESPONSE: ${response}
 
-Guidelines:
-- Mark as needing follow-up if response is very brief (< 20 words)
-- Mark as needing follow-up if response lacks specific examples
-- Mark as needing follow-up if response seems incomplete
-- Follow-up questions should be specific and probing`;
-
-  const userPrompt = `Question: ${question}
-Response: ${response}
-
-Analyze if this response needs a follow-up question:`;
+DETERMINE if follow-up needed:`;
 
   try {
     const response = await client.messages.create({
       model: 'claude-3-5-sonnet-20241022',
-      max_tokens: 200,
+      max_tokens: 150,
       system: systemPrompt,
       messages: [{ role: 'user', content: userPrompt }],
       temperature: 0.3,
@@ -106,11 +94,38 @@ Analyze if this response needs a follow-up question:`;
     try {
       const result = JSON.parse(content);
 
-      // Validate the result structure
-      if (typeof result !== 'object' || result === null) {
-        console.error('Claude response is not a valid object');
+      // Enhanced validation with better error handling
+      if (!result || typeof result !== 'object') {
+        console.error('Invalid Claude response structure');
         return { needsFollowUp: false };
       }
+
+      if (typeof result.needsFollowUp !== 'boolean') {
+        console.error('Missing or invalid needsFollowUp boolean');
+        return { needsFollowUp: false };
+      }
+
+      if (result.needsFollowUp) {
+        if (typeof result.followUpQuestion !== 'string') {
+          console.error('Follow-up needed but question missing');
+          return { needsFollowUp: false };
+        }
+        if (result.followUpQuestion.length > 80) {
+          console.warn('Follow-up question truncated to 80 chars');
+          result.followUpQuestion = result.followUpQuestion.substring(0, 80);
+        }
+      }
+
+      return result;
+    } catch (parseError) {
+      console.error('JSON parse error in follow-up detection:', parseError);
+      return { needsFollowUp: false };
+    }
+  } catch (error) {
+    console.error('Claude API error in follow-up detection:', error);
+    return { needsFollowUp: false };
+  }
+}
 
       if (typeof result.needsFollowUp !== 'boolean') {
         console.error('Claude response missing valid needsFollowUp boolean');
@@ -139,25 +154,51 @@ Analyze if this response needs a follow-up question:`;
   }
 }
 
-function getFallbackQuestion(section: string): string {
-  const fallbacks: Record<string, string[]> = {
-    'attention': [
-      'Can you tell me about a specific time when you struggled to maintain focus?',
-      'How does difficulty concentrating affect your daily activities?',
-      'What strategies have you tried to improve your focus?'
-    ],
-    'hyperactivity': [
-      'How do you handle feelings of restlessness?',
-      'Can you describe situations where you feel the need to move constantly?',
-      'How does physical restlessness impact your work or relationships?'
-    ],
-    'impulsivity': [
-      'Tell me about a time when acting quickly led to unintended consequences.',
-      'How do you manage impulsive decisions?',
-      'What situations tend to trigger impulsive behavior for you?'
-    ]
-  };
-
-  const questions = fallbacks[section] || fallbacks['attention'];
+// Enhanced fallback question selection using comprehensive question banks
+function getEnhancedFallbackQuestion(section: string): string {
+  const questions = getFallbackQuestionsForDomain(section.toLowerCase());
   return questions[Math.floor(Math.random() * questions.length)];
+}
+
+// Memory scaffolding for patients who express difficulty remembering
+export async function generateMemoryScaffolds(ageGroup: 'early' | 'school' | 'adolescent' | 'general' = 'general'): Promise<string[]> {
+  const client = getAnthropicClient();
+
+  const systemPrompt = INTERVIEW_SYSTEM_PROMPTS.memoryScaffolding;
+
+  const scaffolds = getMemoryScaffoldsForAgeGroup(ageGroup);
+  const contextPrompt = `AGE GROUP: ${ageGroup} childhood
+AVAILABLE SCAFFOLDS: ${scaffolds.slice(0, 5).join('; ')}
+
+Generate 2-3 contextual memory prompts for ADHD recall:`;
+
+  try {
+    const response = await client.messages.create({
+      model: 'claude-3-5-sonnet-20241022',
+      max_tokens: 200,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: userPrompt }],
+      temperature: 0.6,
+    });
+
+    const content = response.content[0]?.type === 'text'
+      ? response.content[0].text.trim()
+      : '';
+
+    try {
+      const result = JSON.parse(content);
+      if (result.scaffolds && Array.isArray(result.scaffolds) && result.scaffolds.length >= 2) {
+        return result.scaffolds.slice(0, 3); // Limit to 3 scaffolds
+      }
+    } catch (parseError) {
+      console.error('Failed to parse memory scaffold response:', parseError);
+    }
+
+    // Fallback to static scaffolds
+    return scaffolds.slice(0, 3);
+  } catch (error) {
+    console.error('Claude API error in memory scaffolding:', error);
+    // Return static scaffolds as fallback
+    return getMemoryScaffoldsForAgeGroup(ageGroup).slice(0, 3);
+  }
 }
